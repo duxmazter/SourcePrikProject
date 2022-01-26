@@ -10,61 +10,25 @@
 #include <string>
 
 using namespace std;
-namespace Utils {
-    /**
-    * FUNCTION: getFilePath 
-    * USE: Returns the path from a given file path
-    * @param path: The path of the file
-    * @return: The path from the given file path
-    */
-    std::string getFilePath(const std::string& path) {
-        auto pathEnd = path.find_last_of("/\\");
-        auto pathName = pathEnd == std::string::npos ? path : path.substr(0, pathEnd);
-        return pathName;
-    }
- 
-    /**
-    * FUNCTION: getFileName 
-    * USE: Returns the file name from a given file path
-    * @param path: The path of the file
-    * @return: The file name from the given file path
-    */
-    std::string getFileName(const std::string& path) {
-        auto fileNameStart = path.find_last_of("/\\");
-        auto fileName = fileNameStart == std::string::npos ? path : path.substr(fileNameStart + 1);
-        return fileName;
-    }
- 
-    /**
-    * FUNCTION: getFileExtension 
-    * USE: Returns the file extension from a given file path
-    * @param path: The path of the file
-    * @return: The file extension from the given file path
-    */
-    std::string getFileExtension(const std::string& path) {
-        auto fileName = getFileName(path);
-        auto extStart = fileName.find_last_of('.');
-        auto ext = extStart == std::string::npos ? "" : fileName.substr(extStart + 1);
-        std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c) { 
-            return static_cast<unsigned char>(std::tolower(c)); 
-        });
-        return ext;
-    }
-}
 
-//path string fullpath  
-// cin << fullpath;
-string fullpath = "C:\\Users\\eak_k\\Downloads\\C\\Git Beginner\\SourcePrikProject\\gif.gif";
-auto filePath = Utils::getFilePath(fullpath);
-string s_filename(Utils::getFileName(fullpath));
+string getFilePath(const string& path);
+ 
+string getFileName(const string& path);
+ 
+string getFileExtension(const string& path);
 
 
 void bookmark();
 
 int main(){
+    
+    //set path
+    string fullpath = "C:\\Users\\eak_k\\Downloads\\C\\Git Beginner\\SourcePrikProject\\text.txt";
+    auto filePath = getFilePath(fullpath);
+    string s_filename(getFileName(fullpath));
 
     //file extension
-    auto extension = Utils::getFileExtension(fullpath);
+    auto extension = getFileExtension(fullpath);
 
     //obtain file size
     streampos begin,end;
@@ -113,4 +77,44 @@ void bookmark(){
         cout << "-";
     }cout<<endl;
 }
+
+    /**
+    * FUNCTION: getFilePath 
+    * USE: Returns the path from a given file path
+    * @param path: The path of the file
+    * @return: The path from the given file path
+    */
+string getFilePath(const std::string& path) {
+        auto pathEnd = path.find_last_of("/\\");
+        auto pathName = pathEnd == std::string::npos ? path : path.substr(0, pathEnd);
+        return pathName;
+    }
+ 
+    /**
+    * FUNCTION: getFileName 
+    * USE: Returns the file name from a given file path
+    * @param path: The path of the file
+    * @return: The file name from the given file path
+    */
+string getFileName(const std::string& path) {
+        auto fileNameStart = path.find_last_of("/\\");
+        auto fileName = fileNameStart == std::string::npos ? path : path.substr(fileNameStart + 1);
+        return fileName;
+    }
+ 
+    /**
+    * FUNCTION: getFileExtension 
+    * USE: Returns the file extension from a given file path
+    * @param path: The path of the file
+    * @return: The file extension from the given file path
+    */
+string getFileExtension(const std::string& path) {
+        auto fileName = getFileName(path);
+        auto extStart = fileName.find_last_of('.');
+        auto ext = extStart == std::string::npos ? "" : fileName.substr(extStart + 1);
+        std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c) { 
+            return static_cast<unsigned char>(std::tolower(c)); 
+        });
+        return ext;
+    }
 
