@@ -18,10 +18,16 @@ string getFileName(const string& path);
 string getFileExtension(const string& path);
 
 
+void moveFile(const string& oldPath, const string& newPath);
+ 
+void splitType();
+
 void bookmark();
 
+
+
 int main(){
-    
+    /*
     //set path
     string fullpath = "C:\\Users\\eak_k\\Downloads\\C\\Git Beginner\\SourcePrikProject\\text.txt";
     auto filePath = getFilePath(fullpath);
@@ -67,8 +73,10 @@ int main(){
     o << "Created: " <<timecreate;
     o << "Last Modified: " << timemod;
     o.close();
+    */
 
-    
+    splitType();
+
     return 0;
 }
 
@@ -118,3 +126,50 @@ string getFileExtension(const std::string& path) {
         return ext;
     }
 
+void moveFile(const string& oldPath, const string& newPath){
+    rename(oldPath.c_str(), newPath.c_str());
+}
+
+void splitType(){
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+    cout << "Choose your files directory : ";
+    string directoryPath;
+    getline(cin,directoryPath);
+
+    cout << "Choose your files type : ";
+    string filesType;
+    cin >> filesType;
+    for (auto & c: filesType) c = tolower(c);
+
+     cout << "----------------------------------------------------------------------------------------------------" << endl;
+
+    string newPath;
+    newPath = directoryPath + "\\" + filesType;
+    
+  
+    for (const auto & entry : std::filesystem::directory_iterator(directoryPath)){
+        string currPath;
+        currPath = entry.path().string();
+
+        if(getFileExtension(currPath) == filesType){
+            rmdir(newPath.c_str());
+            mkdir(newPath.c_str());
+        }
+    }
+
+    bool typeFound = false;
+
+    for (const auto & entry : std::filesystem::directory_iterator(directoryPath)){
+        string currPath;
+        currPath = entry.path().string();
+
+        if(getFileExtension(currPath) == filesType){
+            cout << getFileName(currPath) << " --> has been moved to new directory : " << filesType << endl;
+            moveFile(currPath,newPath + "\\" + getFileName(currPath));
+            typeFound = true;
+        }
+    }
+    if(!typeFound) cout << "not found any file with type : " + filesType << endl;
+    else cout << "all files have been moved successfully." << endl;
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+}
