@@ -1,6 +1,1 @@
-# SourcePrikProject
-A backup and allocating software that help your storage even more pleasant to look at
-
-# split file by date branch idea
-
--ทำ code ช่วยแยกไฟล์ตามเวลาที่ไฟล์ถูกสร้าง
+1.อาจจะต้องคัดแยกไฟล์ก่อนที่จะ clone ใหม่ เพราะว่า ถ้า clone ขึ้นมาแล้วเวลาที่ไฟล์เก่าเคยสร้างจะเปลี่ยนเป็นปัจจุบัน ซึ่งอาจจะทำให้การคัดแยกไฟล์ตามเวลาที่ไฟล์ถูกสร้างเป็นไปได้ยาก
