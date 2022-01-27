@@ -1,120 +1,110 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <filesystem>
-#include <ctime>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <cerrno>
-#include <cstring>
-#include <string>
+#include<iostream>
+#include<fstream>
+#include<vector>
+#include<string>
+#include<cstdlib>
 
 using namespace std;
 
-string getFilePath(const string& path);
- 
-string getFileName(const string& path);
- 
-string getFileExtension(const string& path);
+const int N = 27;
 
+char score2grade(int score){
+    if(score >= 80) return 'A';
+    if(score >= 70) return 'B';
+    if(score >= 60) return 'C';
+    if(score >= 50) return 'D';
+    else return 'F';
+}
 
-void bookmark();
+string toUpperStr(string x){
+    string y = x;
+    for(unsigned i = 0; i < x.size();i++) y[i] = toupper(x[i]);
+    return y;
+}
+
+void importDataFromFile(string filename, vector<string> &names, vector<int> &scores, vector<char> &grades){
+    string textline;
+    ifstream source;
+    source.open(filename);
+    char readname[N];
+    int s1,s2,s3;
+    while(getline(source,textline)){
+      const char *data = textline.c_str();
+      sscanf(data,"%[^:]: %d %d %d", readname, &s1, &s2, &s3);
+      names.push_back(readname);
+      scores.push_back(s1+s2+s3);
+      grades.push_back(score2grade(s1+s2+s3));
+    }
+    source.close();
+}
+
+void getCommand(string &command, string &key){
+  cout << "Please input your command: ";
+  string input;
+  char a[N],b[N];
+  getline(cin,input);
+  sscanf(input.c_str(),"%s %[^\n]",a,b);
+  command = a;key = b;
+}
+
+void searchName(vector<string> names, vector<int> scores, vector<char> grades, string key){
+  int pos = 0; 
+  bool found;
+  cout << "---------------------------------"<<endl;
+  for(unsigned int i = 0; i < names.size() ;i++){
+    if(toUpperStr(names[i]) == key){
+      pos = i;
+      found = true;
+    }
+    else if(i == names.size()-1 && found == false){
+      cout << "Cannot found." <<endl;
+    }
+  }
+  if (found == true){
+    cout << names[pos] << "'s score = " << scores[pos] << endl;
+    cout << names[pos] << "'s grade = " << grades[pos] << endl;
+  }
+  cout << "---------------------------------"<<endl;
+}
+
+void searchGrade(vector<string> names, vector<int> scores, vector<char> grades, string key){
+  cout << "---------------------------------"<<endl;
+  const char *grade = key.c_str();
+  bool found;
+  for( unsigned int i = 0; i < names.size() ;i++){
+    if(grades[i] == *grade){
+      cout << names[i] << " (" << scores[i] << ")" << endl;
+      found = true;
+    }
+    else if(i == names.size()-1 && found == false){
+      cout << "Cannot found." << endl;
+    }
+  }
+  cout << "---------------------------------"<<endl;
+}
+
 
 int main(){
+    string filename = "name_score.txt";
+    vector<string> names;
+    vector<int> scores;
+    vector<char> grades; 
+    importDataFromFile(filename, names, scores, grades);
     
-    //set path
-    string fullpath = "C:\\Users\\eak_k\\Downloads\\C\\Git Beginner\\SourcePrikProject\\text.txt";
-    auto filePath = getFilePath(fullpath);
-    string s_filename(getFileName(fullpath));
-
-    //file extension
-    auto extension = getFileExtension(fullpath);
-
-    //obtain file size
-    streampos begin,end;
-    ifstream myfile (fullpath, ios::binary);
-    begin = myfile.tellg();
-    myfile.seekg (0, ios::end);
-    end = myfile.tellg();
-    auto size = end-begin;
-    myfile.close();
-    
-    //time
-    struct stat fileInfo;
-    if (stat(s_filename.c_str(), &fileInfo) != 0) {  // Use stat( ) to get the info
-      std::cerr << "Error: " << strerror(errno) << '\n';
-      return(EXIT_FAILURE);
-   }
-    auto timecreate = ctime(&fileInfo.st_ctime);         // Creation time
-    auto timemod = ctime(&fileInfo.st_mtime);         // Last mod time
-
-    //console 
-    bookmark();
-    cout << "Path: " << filePath <<endl; 
-    cout << "Name: " << s_filename << endl;
-    cout << "Size: " << size << " bytes"<<endl;
-    cout << "Extension:."<<extension<<endl;
-    cout << "Created: " <<timecreate;
-    cout << "Last Modified: " << timemod;
-    bookmark();
-
-    //output file
-    ofstream o{s_filename+"(Cloned).txt"};
-    o << "Path: " << filePath<<endl;
-    o << "Name: " << s_filename << endl;
-    o << "Size: " << size << " bytes"<<endl;
-    o << "Extension:."<<extension<<endl; 
-    o << "Created: " <<timecreate;
-    o << "Last Modified: " << timemod;
-    o.close();
-
+    do{
+        string command, key;
+        getCommand(command,key);
+        command = toUpperStr(command);
+        key = toUpperStr(key);
+        if(command == "EXIT") break;
+        else if(command == "GRADE") searchGrade(names, scores, grades, key);
+        else if(command == "NAME") searchName(names, scores, grades, key);
+        else{
+            cout << "---------------------------------\n";
+            cout << "Invalid command.\n";
+            cout << "---------------------------------\n";
+        }
+    }while(true);
     
     return 0;
 }
-
-void bookmark(){
-    for(int i = 0; i < 100; i++){
-        cout << "-";
-    }cout<<endl;
-}
-
-    /**
-    * FUNCTION: getFilePath 
-    * USE: Returns the path from a given file path
-    * @param path: The path of the file
-    * @return: The path from the given file path
-    */
-string getFilePath(const std::string& path) {
-        auto pathEnd = path.find_last_of("/\\");
-        auto pathName = pathEnd == std::string::npos ? path : path.substr(0, pathEnd);
-        return pathName;
-    }
- 
-    /**
-    * FUNCTION: getFileName 
-    * USE: Returns the file name from a given file path
-    * @param path: The path of the file
-    * @return: The file name from the given file path
-    */
-string getFileName(const std::string& path) {
-        auto fileNameStart = path.find_last_of("/\\");
-        auto fileName = fileNameStart == std::string::npos ? path : path.substr(fileNameStart + 1);
-        return fileName;
-    }
- 
-    /**
-    * FUNCTION: getFileExtension 
-    * USE: Returns the file extension from a given file path
-    * @param path: The path of the file
-    * @return: The file extension from the given file path
-    */
-string getFileExtension(const std::string& path) {
-        auto fileName = getFileName(path);
-        auto extStart = fileName.find_last_of('.');
-        auto ext = extStart == std::string::npos ? "" : fileName.substr(extStart + 1);
-        std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c) { 
-            return static_cast<unsigned char>(std::tolower(c)); 
-        });
-        return ext;
-    }
-
