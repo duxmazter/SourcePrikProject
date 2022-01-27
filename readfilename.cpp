@@ -21,6 +21,8 @@ string getFileName(const string& path);
 string getFileExtension(const string& path);
 
 void moveFile(const string& oldPath, const string& newPath);
+
+bool moveFilesToDirectory(const string& filestype, const string& directoryPath);
  
 void splitType();
 
@@ -100,6 +102,38 @@ void moveFile(const string& oldPath, const string& newPath){
     rename(oldPath.c_str(), newPath.c_str());
 }
 
+bool moveFilesToDirectory(const string& filestype, const string& directoryPath){
+    
+    string newPath;
+    newPath = directoryPath + "\\" + filestype;
+    
+  
+    for (const auto & entry : std::filesystem::directory_iterator(directoryPath)){
+        string currPath;
+        currPath = entry.path().string();
+
+        if(getFileExtension(currPath) == filestype){
+            rmdir(newPath.c_str());
+            mkdir(newPath.c_str());
+        }
+    }
+
+    bool typeFound = false;
+
+    for (const auto & entry : std::filesystem::directory_iterator(directoryPath)){
+        string currPath;
+        currPath = entry.path().string();
+
+        if(getFileExtension(currPath) == filestype){
+            cout << getFileName(currPath) << " --> has been moved to new directory : " << filestype << endl;
+            moveFile(currPath,newPath + "\\" + getFileName(currPath));
+            typeFound = true;
+        }
+    }
+
+    return typeFound;
+}
+
 void splitType(){
     cout << "----------------------------------------------------------------------------------------------------" << endl;
     cout << "Choose your files directory : ";
@@ -111,36 +145,27 @@ void splitType(){
     cin >> filesType;
     for (auto & c: filesType) c = tolower(c);
 
-     cout << "----------------------------------------------------------------------------------------------------" << endl;
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
 
-    string newPath;
-    newPath = directoryPath + "\\" + filesType;
-    
-  
-    for (const auto & entry : std::filesystem::recursive_directory_iterator(directoryPath)){
+    if(filesType == "all"){
+        bool checkFiles = false;
+        for (const auto & entry : std::filesystem::directory_iterator(directoryPath)){
         string currPath;
         currPath = entry.path().string();
 
-        if(getFileExtension(currPath) == filesType){
-            rmdir(newPath.c_str());
-            mkdir(newPath.c_str());
+            if(getFileExtension(currPath) != filesType){
+                filesType = getFileExtension(currPath);
+                if(filesType != ""){
+                    moveFilesToDirectory(filesType,directoryPath);
+                    checkFiles = true;
+                } 
+            }
         }
+        if(!checkFiles) cout << "This directory is empty." << endl;
+        else cout << "All files have been moved successfully." << endl;
     }
-
-    bool typeFound = false;
-
-    for (const auto & entry : std::filesystem::recursive_directory_iterator(directoryPath)){
-        string currPath;
-        currPath = entry.path().string();
-
-        if(getFileExtension(currPath) == filesType){
-            cout << getFileName(currPath) << " --> has been moved to new directory : " << filesType << endl;
-            moveFile(currPath,newPath + "\\" + getFileName(currPath));
-            typeFound = true;
-        }
-    }
-    if(!typeFound) cout << "not found any file with type : " + filesType << endl;
-    else cout << "all files have been moved successfully." << endl;
+    else if(!moveFilesToDirectory(filesType,directoryPath)) cout << "Not found any file with type " + filesType + "." << endl;
+    else cout << "All files have been moved successfully." << endl;
     cout << "----------------------------------------------------------------------------------------------------" << endl;
 }
 
