@@ -11,79 +11,40 @@
 
 using namespace std;
 
+string toUpperStr(string x);
+
 string getFilePath(const string& path);
  
 string getFileName(const string& path);
  
 string getFileExtension(const string& path);
 
-
 void moveFile(const string& oldPath, const string& newPath);
  
 void splitType();
 
-void bookmark();
-
-
+void clone();
 
 int main(){
-    /*
-    //set path
-    string fullpath = "C:\\Users\\eak_k\\Downloads\\C\\Git Beginner\\SourcePrikProject\\text.txt";
-    auto filePath = getFilePath(fullpath);
-    string s_filename(getFileName(fullpath));
 
-    //file extension
-    auto extension = getFileExtension(fullpath);
+    do{
+        string command;
+        getline(cin,command);
+        command = toUpperStr(command);
 
-    //obtain file size
-    streampos begin,end;
-    ifstream myfile (fullpath, ios::binary);
-    begin = myfile.tellg();
-    myfile.seekg (0, ios::end);
-    end = myfile.tellg();
-    auto size = end-begin;
-    myfile.close();
-    
-    //time
-    struct stat fileInfo;
-    if (stat(s_filename.c_str(), &fileInfo) != 0) {  // Use stat( ) to get the info
-      std::cerr << "Error: " << strerror(errno) << '\n';
-      return(EXIT_FAILURE);
-   }
-    auto timecreate = ctime(&fileInfo.st_ctime);         // Creation time
-    auto timemod = ctime(&fileInfo.st_mtime);         // Last mod time
-
-    //console 
-    bookmark();
-    cout << "Path: " << filePath <<endl; 
-    cout << "Name: " << s_filename << endl;
-    cout << "Size: " << size << " bytes"<<endl;
-    cout << "Extension:."<<extension<<endl;
-    cout << "Created: " <<timecreate;
-    cout << "Last Modified: " << timemod;
-    bookmark();
-
-    //output file
-    ofstream o{s_filename+"(Cloned).txt"};
-    o << "Path: " << filePath<<endl;
-    o << "Name: " << s_filename << endl;
-    o << "Size: " << size << " bytes"<<endl;
-    o << "Extension:."<<extension<<endl; 
-    o << "Created: " <<timecreate;
-    o << "Last Modified: " << timemod;
-    o.close();
-    */
-
-    splitType();
+        if(command == "EXIT") break;
+        else if(command == "clone") clone();
+        else if(command == "sorttype") splitType();
+        else if(command == "sortdate"); //splitdate();
+        else if(command == "search"); //search();
+        else{
+            cout << "---------------------------------\n";
+            cout << "Invalid command.\n";
+            cout << "---------------------------------\n";
+        }
+    }while(true);
 
     return 0;
-}
-
-void bookmark(){
-    for(int i = 0; i < 100; i++){
-        cout << "-";
-    }cout<<endl;
 }
 
     /**
@@ -96,7 +57,7 @@ string getFilePath(const std::string& path) {
         auto pathEnd = path.find_last_of("/\\");
         auto pathName = pathEnd == std::string::npos ? path : path.substr(0, pathEnd);
         return pathName;
-    }
+}
  
     /**
     * FUNCTION: getFileName 
@@ -108,7 +69,7 @@ string getFileName(const std::string& path) {
         auto fileNameStart = path.find_last_of("/\\");
         auto fileName = fileNameStart == std::string::npos ? path : path.substr(fileNameStart + 1);
         return fileName;
-    }
+}
  
     /**
     * FUNCTION: getFileExtension 
@@ -124,7 +85,13 @@ string getFileExtension(const std::string& path) {
             return static_cast<unsigned char>(std::tolower(c)); 
         });
         return ext;
-    }
+}
+
+string toUpperStr(string x){
+    string y = x;
+    for(unsigned i = 0; i < x.size();i++) y[i] = toupper(x[i]);
+    return y;
+}
 
 void moveFile(const string& oldPath, const string& newPath){
     rename(oldPath.c_str(), newPath.c_str());
@@ -172,4 +139,55 @@ void splitType(){
     if(!typeFound) cout << "not found any file with type : " + filesType << endl;
     else cout << "all files have been moved successfully." << endl;
     cout << "----------------------------------------------------------------------------------------------------" << endl;
+}
+
+void clone(){
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+    cout << "Choose your files directory : ";
+    //set path
+    string fullpath;
+    getline(cin,fullpath);
+    auto filePath = getFilePath(fullpath);
+    string s_filename(getFileName(fullpath));
+
+    //file extension
+    auto extension = getFileExtension(fullpath);
+
+    //obtain file size
+    streampos begin,end;
+    ifstream myfile (fullpath, ios::binary);
+    begin = myfile.tellg();
+    myfile.seekg (0, ios::end);
+    end = myfile.tellg();
+    auto size = end-begin;
+    myfile.close();
+    
+    //time
+    struct stat fileInfo;
+    if (stat(s_filename.c_str(), &fileInfo) != 0) {  // Use stat( ) to get the info
+      std::cerr << "Error: " << strerror(errno) << '\n';
+   }
+    auto timecreate = ctime(&fileInfo.st_ctime);         // Creation time
+    auto timemod = ctime(&fileInfo.st_mtime);         // Last mod time
+
+    //console 
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+    cout << "Path: " << filePath <<endl; 
+    cout << "Name: " << s_filename << endl;
+    cout << "Size: " << size << " bytes"<<endl;
+    cout << "Extension:."<<extension<<endl;
+    cout << "Created: " <<timecreate;
+    cout << "Last Modified: " << timemod;
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+
+    //output file
+    ofstream o{s_filename+"(Cloned).txt"};
+    o << "Path: " << filePath<<endl;
+    o << "Name: " << s_filename << endl;
+    o << "Size: " << size << " bytes"<<endl;
+    o << "Extension:."<<extension<<endl; 
+    o << "Created: " <<timecreate;
+    o << "Last Modified: " << timemod;
+    o.close();
+    
 }
