@@ -1,19 +1,90 @@
-#include<iostream>
-#include<fstream>
-#include<vector>
-#include<string>
-#include<cstdlib>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <filesystem>
+#include <ctime>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <cerrno>
+#include <cstring>
+#include <string>
 
 using namespace std;
 
-const int N = 27;
+string toUpperStr(string x);
 
-char score2grade(int score){
-    if(score >= 80) return 'A';
-    if(score >= 70) return 'B';
-    if(score >= 60) return 'C';
-    if(score >= 50) return 'D';
-    else return 'F';
+string getFilePath(const string& path);
+ 
+string getFileName(const string& path);
+ 
+string getFileExtension(const string& path);
+
+void moveFile(const string& oldPath, const string& newPath);
+ 
+void splitType();
+
+void clone();
+
+int main(){
+
+    do{
+        cout<< "Please input command: ";
+        string command;
+        getline(cin,command);
+
+        if(command == "EXIT") break;
+        else if(command == "clone") clone();
+        else if(command == "sorttype") splitType();
+        else if(command == "sortdate"); //splitdate();
+        else if(command == "search"); //search();
+        else{
+            cout << "---------------------------------\n";
+            cout << "Invalid command.\n";
+            cout << "---------------------------------\n";
+        }
+    }while(true);
+
+    return 0;
+}
+
+    /**
+    * FUNCTION: getFilePath 
+    * USE: Returns the path from a given file path
+    * @param path: The path of the file
+    * @return: The path from the given file path
+    */
+string getFilePath(const std::string& path) {
+        auto pathEnd = path.find_last_of("/\\");
+        auto pathName = pathEnd == std::string::npos ? path : path.substr(0, pathEnd);
+        return pathName;
+}
+ 
+    /**
+    * FUNCTION: getFileName 
+    * USE: Returns the file name from a given file path
+    * @param path: The path of the file
+    * @return: The file name from the given file path
+    */
+string getFileName(const std::string& path) {
+        auto fileNameStart = path.find_last_of("/\\");
+        auto fileName = fileNameStart == std::string::npos ? path : path.substr(fileNameStart + 1);
+        return fileName;
+}
+ 
+    /**
+    * FUNCTION: getFileExtension 
+    * USE: Returns the file extension from a given file path
+    * @param path: The path of the file
+    * @return: The file extension from the given file path
+    */
+string getFileExtension(const std::string& path) {
+        auto fileName = getFileName(path);
+        auto extStart = fileName.find_last_of('.');
+        auto ext = extStart == std::string::npos ? "" : fileName.substr(extStart + 1);
+        std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c) { 
+            return static_cast<unsigned char>(std::tolower(c)); 
+        });
+        return ext;
 }
 
 string toUpperStr(string x){
@@ -22,89 +93,101 @@ string toUpperStr(string x){
     return y;
 }
 
-void importDataFromFile(string filename, vector<string> &names, vector<int> &scores, vector<char> &grades){
-    string textline;
-    ifstream source;
-    source.open(filename);
-    char readname[N];
-    int s1,s2,s3;
-    while(getline(source,textline)){
-      const char *data = textline.c_str();
-      sscanf(data,"%[^:]: %d %d %d", readname, &s1, &s2, &s3);
-      names.push_back(readname);
-      scores.push_back(s1+s2+s3);
-      grades.push_back(score2grade(s1+s2+s3));
-    }
-    source.close();
+void moveFile(const string& oldPath, const string& newPath){
+    rename(oldPath.c_str(), newPath.c_str());
 }
 
-void getCommand(string &command, string &key){
-  cout << "Please input your command: ";
-  string input;
-  char a[N],b[N];
-  getline(cin,input);
-  sscanf(input.c_str(),"%s %[^\n]",a,b);
-  command = a;key = b;
-}
+void splitType(){
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+    cout << "Choose your files directory : ";
+    string directoryPath;
+    getline(cin,directoryPath);
 
-void searchName(vector<string> names, vector<int> scores, vector<char> grades, string key){
-  int pos = 0; 
-  bool found;
-  cout << "---------------------------------"<<endl;
-  for(unsigned int i = 0; i < names.size() ;i++){
-    if(toUpperStr(names[i]) == key){
-      pos = i;
-      found = true;
-    }
-    else if(i == names.size()-1 && found == false){
-      cout << "Cannot found." <<endl;
-    }
-  }
-  if (found == true){
-    cout << names[pos] << "'s score = " << scores[pos] << endl;
-    cout << names[pos] << "'s grade = " << grades[pos] << endl;
-  }
-  cout << "---------------------------------"<<endl;
-}
+    cout << "Choose your files type : ";
+    string filesType;
+    cin >> filesType;
+    for (auto & c: filesType) c = tolower(c);
 
-void searchGrade(vector<string> names, vector<int> scores, vector<char> grades, string key){
-  cout << "---------------------------------"<<endl;
-  const char *grade = key.c_str();
-  bool found;
-  for( unsigned int i = 0; i < names.size() ;i++){
-    if(grades[i] == *grade){
-      cout << names[i] << " (" << scores[i] << ")" << endl;
-      found = true;
-    }
-    else if(i == names.size()-1 && found == false){
-      cout << "Cannot found." << endl;
-    }
-  }
-  cout << "---------------------------------"<<endl;
-}
+     cout << "----------------------------------------------------------------------------------------------------" << endl;
 
-
-int main(){
-    string filename = "name_score.txt";
-    vector<string> names;
-    vector<int> scores;
-    vector<char> grades; 
-    importDataFromFile(filename, names, scores, grades);
+    string newPath;
+    newPath = directoryPath + "\\" + filesType;
     
-    do{
-        string command, key;
-        getCommand(command,key);
-        command = toUpperStr(command);
-        key = toUpperStr(key);
-        if(command == "EXIT") break;
-        else if(command == "GRADE") searchGrade(names, scores, grades, key);
-        else if(command == "NAME") searchName(names, scores, grades, key);
-        else{
-            cout << "---------------------------------\n";
-            cout << "Invalid command.\n";
-            cout << "---------------------------------\n";
+  
+    for (const auto & entry : std::filesystem::directory_iterator(directoryPath)){
+        string currPath;
+        currPath = entry.path().string();
+
+        if(getFileExtension(currPath) == filesType){
+            rmdir(newPath.c_str());
+            mkdir(newPath.c_str());
         }
-    }while(true);
+    }
+
+    bool typeFound = false;
+
+    for (const auto & entry : std::filesystem::directory_iterator(directoryPath)){
+        string currPath;
+        currPath = entry.path().string();
+
+        if(getFileExtension(currPath) == filesType){
+            cout << getFileName(currPath) << " --> has been moved to new directory : " << filesType << endl;
+            moveFile(currPath,newPath + "\\" + getFileName(currPath));
+            typeFound = true;
+        }
+    }
+    if(!typeFound) cout << "not found any file with type : " + filesType << endl;
+    else cout << "all files have been moved successfully." << endl;
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+}
+
+void clone(){
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+    cout << "Choose your files directory : ";
+    //set path
+    string fullpath;
+    getline(cin,fullpath);
+    auto filePath = getFilePath(fullpath);
+    string s_filename(getFileName(fullpath));
+
+    //file extension
+    auto extension = getFileExtension(fullpath);
+
+    //obtain file size
+    streampos begin,end;
+    ifstream myfile (fullpath, ios::binary);
+    begin = myfile.tellg();
+    myfile.seekg (0, ios::end);
+    end = myfile.tellg();
+    auto size = end-begin;
+    myfile.close();
     
-    return 0;
+    //time
+    struct stat fileInfo;
+    if (stat(s_filename.c_str(), &fileInfo) != 0) {  // Use stat( ) to get the info
+      std::cerr << "Error: " << strerror(errno) << '\n';
+   }
+    auto timecreate = ctime(&fileInfo.st_ctime);         // Creation time
+    auto timemod = ctime(&fileInfo.st_mtime);         // Last mod time
+
+    //console 
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+    cout << "Path: " << filePath <<endl; 
+    cout << "Name: " << s_filename << endl;
+    cout << "Size: " << size << " bytes"<<endl;
+    cout << "Extension:."<<extension<<endl;
+    cout << "Created: " <<timecreate;
+    cout << "Last Modified: " << timemod;
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+
+    //output file
+    ofstream o{s_filename+"(Cloned).txt"};
+    o << "Path: " << filePath<<endl;
+    o << "Name: " << s_filename << endl;
+    o << "Size: " << size << " bytes"<<endl;
+    o << "Extension:."<<extension<<endl; 
+    o << "Created: " <<timecreate;
+    o << "Last Modified: " << timemod;
+    o.close();
+    
 }
