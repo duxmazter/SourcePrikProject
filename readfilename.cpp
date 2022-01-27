@@ -10,6 +10,7 @@
 #include <string>
 
 using namespace std;
+namespace fs = std::filesystem;
 
 string toUpperStr(string x);
 
@@ -25,6 +26,8 @@ void splitType();
 
 void clone();
 
+void showFile();
+
 int main(){
 
     do{
@@ -32,11 +35,11 @@ int main(){
         string command;
         getline(cin,command);
 
-        if(command == "EXIT") break;
+        if(command == "exit") break;
         else if(command == "clone") clone();
         else if(command == "sorttype") splitType();
         else if(command == "sortdate"); //splitdate();
-        else if(command == "search"); //search();
+        else if(command == "show") showFile();
         else{
             cout << "---------------------------------\n";
             cout << "Invalid command.\n";
@@ -114,7 +117,7 @@ void splitType(){
     newPath = directoryPath + "\\" + filesType;
     
   
-    for (const auto & entry : std::filesystem::directory_iterator(directoryPath)){
+    for (const auto & entry : std::filesystem::recursive_directory_iterator(directoryPath)){
         string currPath;
         currPath = entry.path().string();
 
@@ -126,7 +129,7 @@ void splitType(){
 
     bool typeFound = false;
 
-    for (const auto & entry : std::filesystem::directory_iterator(directoryPath)){
+    for (const auto & entry : std::filesystem::recursive_directory_iterator(directoryPath)){
         string currPath;
         currPath = entry.path().string();
 
@@ -141,12 +144,9 @@ void splitType(){
     cout << "----------------------------------------------------------------------------------------------------" << endl;
 }
 
-void clone(){
-    cout << "----------------------------------------------------------------------------------------------------" << endl;
-    cout << "Choose your files directory : ";
+void cloneFile(string fullpath){
+
     //set path
-    string fullpath;
-    getline(cin,fullpath);
     auto filePath = getFilePath(fullpath);
     string s_filename(getFileName(fullpath));
 
@@ -181,13 +181,42 @@ void clone(){
     cout << "----------------------------------------------------------------------------------------------------" << endl;
 
     //output file
-    ofstream o{s_filename+"(Cloned).txt"};
-    o << "Path: " << filePath<<endl;
-    o << "Name: " << s_filename << endl;
-    o << "Size: " << size << " bytes"<<endl;
-    o << "Extension:."<<extension<<endl; 
-    o << "Created: " <<timecreate;
-    o << "Last Modified: " << timemod;
-    o.close();
-    
+    ofstream outfile{s_filename+"(Cloned).txt"};
+    outfile << "Path: " << filePath<<endl;
+    outfile << "Name: " << s_filename << endl;
+    outfile << "Size: " << size << " bytes"<<endl;
+    outfile << "Extension:."<<extension<<endl; 
+    outfile << "Created: " <<timecreate;
+    outfile << "Last Modified: " << timemod;
+    outfile.close();
+
+}
+
+void showFile(){
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+    cout << "Choose your files directory : ";
+    string directoryPath;
+    getline(cin,directoryPath);
+
+    for (const auto & entry : filesystem::recursive_directory_iterator(directoryPath))
+        cout << entry.path() << ::endl;
+}
+
+void clone(){
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+    cout << "Choose your files directory : ";
+    string directoryPath;
+    getline(cin,directoryPath);
+
+    struct stat s;
+    if(stat(directoryPath.c_str(),&s) == 0){
+        if( fs::is_directory(directoryPath) ){
+            string newPath = directoryPath + "(Cloned)";
+            rmdir(newPath.c_str());
+            mkdir(newPath.c_str());
+        }
+        else if( fs::is_regular_file(directoryPath) ){
+            cloneFile(directoryPath);
+        }
+    }
 }
