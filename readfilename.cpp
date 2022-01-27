@@ -30,9 +30,8 @@ int main(){
     do{
         string command;
         getline(cin,command);
-        command = toUpperStr(command);
 
-        if(command == "EXIT") break;
+        if(command == "exit") break;
         else if(command == "clone") clone();
         else if(command == "sorttype") splitType();
         else if(command == "sortdate"); //splitdate();
