@@ -143,9 +143,25 @@ void splitType(){
 
     cout << "----------------------------------------------------------------------------------------------------" << endl;
 
-    
-    if(!moveFilesToDirectory(filesType,directoryPath)) cout << "not found any file with type : " + filesType << endl;
-    else cout << "all files have been moved successfully." << endl;
+    if(filesType == "all"){
+        bool checkFiles = false;
+        for (const auto & entry : std::filesystem::directory_iterator(directoryPath)){
+        string currPath;
+        currPath = entry.path().string();
+
+            if(getFileExtension(currPath) != filesType){
+                filesType = getFileExtension(currPath);
+                if(filesType != ""){
+                    moveFilesToDirectory(filesType,directoryPath);
+                    checkFiles = true;
+                } 
+            }
+        }
+        if(!checkFiles) cout << "This directory is empty." << endl;
+        else cout << "All files have been moved successfully." << endl;
+    }
+    else if(!moveFilesToDirectory(filesType,directoryPath)) cout << "Not found any file with type " + filesType + "." << endl;
+    else cout << "All files have been moved successfully." << endl;
     cout << "----------------------------------------------------------------------------------------------------" << endl;
 }
 
