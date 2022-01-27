@@ -19,6 +19,8 @@ string getFileName(const string& path);
  
 string getFileExtension(const string& path);
 
+bool moveFilesToDirectory(const string& filestype, const string& directoryPath);
+
 void moveFile(const string& oldPath, const string& newPath);
  
 void splitType();
@@ -96,28 +98,17 @@ void moveFile(const string& oldPath, const string& newPath){
     rename(oldPath.c_str(), newPath.c_str());
 }
 
-void splitType(){
-    cout << "----------------------------------------------------------------------------------------------------" << endl;
-    cout << "Choose your files directory : ";
-    string directoryPath;
-    getline(cin,directoryPath);
-
-    cout << "Choose your files type : ";
-    string filesType;
-    cin >> filesType;
-    for (auto & c: filesType) c = tolower(c);
-
-     cout << "----------------------------------------------------------------------------------------------------" << endl;
-
+bool moveFilesToDirectory(const string& filestype, const string& directoryPath){
+    
     string newPath;
-    newPath = directoryPath + "\\" + filesType;
+    newPath = directoryPath + "\\" + filestype;
     
   
     for (const auto & entry : std::filesystem::directory_iterator(directoryPath)){
         string currPath;
         currPath = entry.path().string();
 
-        if(getFileExtension(currPath) == filesType){
+        if(getFileExtension(currPath) == filestype){
             rmdir(newPath.c_str());
             mkdir(newPath.c_str());
         }
@@ -129,13 +120,31 @@ void splitType(){
         string currPath;
         currPath = entry.path().string();
 
-        if(getFileExtension(currPath) == filesType){
-            cout << getFileName(currPath) << " --> has been moved to new directory : " << filesType << endl;
+        if(getFileExtension(currPath) == filestype){
+            cout << getFileName(currPath) << " --> has been moved to new directory : " << filestype << endl;
             moveFile(currPath,newPath + "\\" + getFileName(currPath));
             typeFound = true;
         }
     }
-    if(!typeFound) cout << "not found any file with type : " + filesType << endl;
+
+    return typeFound;
+}
+
+void splitType(){
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+    cout << "Choose your files directory : ";
+    string directoryPath;
+    getline(cin,directoryPath);
+
+    cout << "Choose your files type : ";
+    string filesType;
+    cin >> filesType;
+    for (auto & c: filesType) c = tolower(c);
+
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+
+    
+    if(!moveFilesToDirectory(filesType,directoryPath)) cout << "not found any file with type : " + filesType << endl;
     else cout << "all files have been moved successfully." << endl;
     cout << "----------------------------------------------------------------------------------------------------" << endl;
 }
