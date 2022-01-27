@@ -38,6 +38,37 @@ int main(){
     end = myfile.tellg();
     auto size = end-begin;
     myfile.close();
+ 
+ /*
+   //file size 
+   ifstream  myfile(  "text.txt"  ,ios::binary);
+   myfile.seekg(0 , ios:: end);
+   float file_size =  myfile.tellg();
+   if(file_size<1024)
+   {
+      cout<< file_size<<" bytes";
+   }
+   else if(file_size>=1024 and file_size<(1024*1024))
+   {
+    file_size=file_size/1024;
+    cout<< file_size<<" Kbytes";
+   }
+   else if(file_size>=(1024*1024) and file_size<(1024*1024*1024))
+   {
+     file_size=file_size/(1024*1024);
+     cout<< file_size<<" Mbytes";
+   }
+   else if(file_size>=(1024*1024*1024) and file_size<(1024.00*1024*1024*1024))
+   {
+     file_size=file_size/(1024*1024*1024);
+     cout<< file_size<<" Gbytes";
+   }
+   else if(file_size>=(1024.00*1024*1024*1024) and file_size<(1024.00*1024*1024*1024*1024))
+   {
+     file_size=file_size/(1024.00*1024*1024*1024);
+     cout<< file_size<<" Tbytes";
+   }
+/*
     
     //time
     struct stat fileInfo;
