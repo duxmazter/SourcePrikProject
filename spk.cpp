@@ -30,7 +30,9 @@ void clone();
 
 void showFile();
 
-int main(){
+void showCommand();
+
+int main(int argc,char *argv[]){
 
     do{
         cout<< "Please input command: ";
