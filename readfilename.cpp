@@ -131,7 +131,13 @@ bool moveFilesToDirectory(const string& filestype, const string& directoryPath){
 }
 
 void splitType(){
-    cout << "----------------------------------------------------------------------------------------------------" << endl;
+    cout << "************************************************************************" << endl;
+    cout << "------------------------------------------------------------------------" << endl;
+    cout << "Current command : Split by type" << endl << " - Insert directory and filetype to split files into a new directory." << endl;
+    cout << "* OR *" << endl;
+    cout << " - Insert * to split all files in the directory.   " << endl;
+    cout << "------------------------------------------------------------------------" << endl;
+    cout << "************************************************************************" << endl;
     cout << "Choose your files directory : ";
     string directoryPath;
     getline(cin,directoryPath);
@@ -141,9 +147,9 @@ void splitType(){
     cin >> filesType;
     for (auto & c: filesType) c = tolower(c);
 
-    cout << "----------------------------------------------------------------------------------------------------" << endl;
+    cout << "------------------------------------------------------------------------" << endl;
 
-    if(filesType == "all"){
+    if(filesType == "*"){
         bool checkFiles = false;
         for (const auto & entry : std::filesystem::directory_iterator(directoryPath)){
         string currPath;
@@ -162,11 +168,11 @@ void splitType(){
     }
     else if(!moveFilesToDirectory(filesType,directoryPath)) cout << "Not found any file with type " + filesType + "." << endl;
     else cout << "All files have been moved successfully." << endl;
-    cout << "----------------------------------------------------------------------------------------------------" << endl;
+    cout << "------------------------------------------------------------------------" << endl;
 }
 
 void clone(){
-    cout << "----------------------------------------------------------------------------------------------------" << endl;
+    cout << "------------------------------------------------------------------------" << endl;
     cout << "Choose your files directory : ";
     //set path
     string fullpath;
