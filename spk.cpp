@@ -32,6 +32,10 @@ void showFile();
 
 void showCommand();
 
+void deClone();
+
+void banish(int);
+
 int main(int argc,char *argv[]){
 
     do{
@@ -44,6 +48,9 @@ int main(int argc,char *argv[]){
         else if(command == "sorttype") splitType();
         else if(command == "sortdate"); //splitdate();
         else if(command == "show") showFile();
+        else if (command == "declone") deClone();
+        else if (command == "defile") banish(1);
+        else if (command == "defol") banish(2);
         else{
             cout << "---------------------------------\n";
             cout << "Invalid command.\n";
@@ -197,6 +204,7 @@ void cloneFile(string fullpath){
     auto timecreate = ctime(&fileInfo.st_ctime);         // Creation time
     auto timemod = ctime(&fileInfo.st_mtime);         // Last mod time
 
+   
     //console 
     cout << "----------------------------------------------------------------------------------------------------" << endl;
     cout << "Path: " << filePath <<endl; 
@@ -205,10 +213,11 @@ void cloneFile(string fullpath){
     cout << "Extension:."<<extension<<endl;
     cout << "Created: " <<timecreate;
     cout << "Last Modified: " << timemod;
+    cout << "Outpath: "<< filePath + "\\" + s_filename + "(Cloned).txt"<<endl;
     cout << "----------------------------------------------------------------------------------------------------" << endl;
 
     //output file
-    ofstream outfile{s_filename+"(Cloned).txt"};
+    ofstream outfile(filePath + "\\" + s_filename + "(Cloned).txt" );
     outfile << "Path: " << filePath<<endl;
     outfile << "Name: " << s_filename << endl;
     outfile << "Size: " << size << " bytes"<<endl;
@@ -216,6 +225,8 @@ void cloneFile(string fullpath){
     outfile << "Created: " <<timecreate;
     outfile << "Last Modified: " << timemod;
     outfile.close();
+
+    
 
 }
 
@@ -229,21 +240,105 @@ void showFile(){
         cout << entry.path() << ::endl;
 }
 
+void cloneFol(string directoryPath){
+    string dupe ="(Cloned)(Cloned)";
+    string sub = "(Cloned)";
+
+    struct stat s;
+    //1st loop for cloning flies.
+    for (const auto &entry : std::filesystem::recursive_directory_iterator(directoryPath)){
+        string currPath;
+        currPath = entry.path().string();
+        if ((currPath.find(sub) != string::npos)) rmdir(currPath.c_str());
+
+            if( fs::is_directory(currPath) ){
+                string newPath = currPath + "(Cloned)";
+                    if ((newPath.find(dupe) != string::npos)) {
+                        rmdir(newPath.c_str());
+                    }else{
+                    rmdir(newPath.c_str());
+                    mkdir(newPath.c_str());
+                    }
+            }
+            else if( fs::is_regular_file(currPath)) {
+                    cloneFile(currPath);
+                }
+    }
+        
+
+    //2nd loop for moving cloned files.
+    for (const auto &entry : std::filesystem::recursive_directory_iterator(directoryPath)){
+        string currPath;
+        currPath = entry.path().string();
+        if ((currPath.find(sub) != string::npos)) ;
+    }    
+}
+
 void clone(){
     cout << "----------------------------------------------------------------------------------------------------" << endl;
     cout << "Choose your files directory : ";
     string directoryPath;
     getline(cin,directoryPath);
 
-    struct stat s;
-    if(stat(directoryPath.c_str(),&s) == 0){
-        if( fs::is_directory(directoryPath) ){
-            string newPath = directoryPath + "(Cloned)";
-            rmdir(newPath.c_str());
-            mkdir(newPath.c_str());
-        }
-        else if( fs::is_regular_file(directoryPath) ){
-            cloneFile(directoryPath);
+    cloneFol(directoryPath);
+}
+
+void deClone(){
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+    cout << "Choose your files directory : ";
+    string directoryPath;
+    getline(cin,directoryPath);
+
+    string dupe ="(Cloned)(Cloned)";
+    string sub = "(Cloned)";
+
+    for (const auto &entry : std::filesystem::recursive_directory_iterator(directoryPath)){
+        string currPath;
+        currPath = entry.path().string();
+        if ((currPath.find(sub) != string::npos)) rmdir(currPath.c_str());
+
+            if( fs::is_directory(currPath) ){
+                string newPath = currPath + "(Cloned)";
+                    if ((newPath.find(dupe) != string::npos)) {
+                        rmdir(newPath.c_str());
+                    }else{
+                    rmdir(newPath.c_str());
+                    }
+            }
+            else if( fs::is_regular_file(currPath)) {
+                if ((currPath.find(sub) != string::npos))
+                    remove(currPath.c_str());
+                }
+    }
+
+    cout<< "Succesfully remove all cloned directories from " << directoryPath<<endl;
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+
+}
+
+void banish(int arg){
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+    cout << "Choose your files directory : ";
+    string directoryPath;
+    getline(cin,directoryPath);
+    
+    for (const auto &entry : std::filesystem::recursive_directory_iterator(directoryPath)){
+        string currPath;
+        currPath = entry.path().string();
+        if(arg == 1){
+            if( fs::is_regular_file(currPath)) remove(currPath.c_str());
+        }else if(arg == 2){
+            string FileFol = directoryPath + "\\file";
+            rmdir(FileFol.c_str());
+            mkdir(FileFol.c_str());
+            if( fs::is_regular_file(currPath)) moveFile(currPath,FileFol);
+        
+
+            // for (const auto &entry : std::filesystem::recursive_directory_iterator(directoryPath)){
+            //         if( fs::is_directory(currPath)) remove(currPath.c_str());
+            //     }
+            // }
+            
         }
     }
 }
