@@ -9,6 +9,9 @@
 #include <cstring>
 #include <string>
 
+#include <dirent.h>
+#include <conio.h>
+
 using namespace std;
 
 string getFilePath(const string& path);
@@ -17,6 +20,7 @@ string getFileName(const string& path);
  
 string getFileExtension(const string& path);
 
+void search();
 
 void bookmark();
 
@@ -148,4 +152,225 @@ string getFileExtension(const std::string& path) {
         });
         return ext;
     }
+
+ 
+
+ 
+void search(){
+
+string type;
+double firstvalue,secondvalue;
+
+
+cout<< " search by B KB MB GB TB : ";
+getline(cin,type) ;
+
+if(type == "B" or type == "KB" or type == "MB" or type == "GB" or type == "TB")	
+{	
+
+cout<< "input first value : ";
+cin>>firstvalue;
+cout<< "input second value : ";
+cin>>secondvalue;
+
+
+
+	struct dirent *d;
+	struct stat folderorfile;
+	
+	DIR *dr;
+	
+	string path = ".\\";
+	
+	dr = opendir(path.c_str());
+
+
+	if (dr != NULL)
+	{
+		for (d = readdir(dr); d != NULL; d = readdir(dr))
+		{
+			string filename = d->d_name;
+			
+			
+			/*/if (stat(type.c_str(), &dst) == 0)
+			{
+
+				if (dst.st_mode & S_IFDIR)
+				{
+					type = "is a FOLDER.";
+				}
+				else if (dst.st_mode & S_IFREG)
+				{
+					type = "is a FILE.";
+				}
+			}
+			/*/
+			ifstream  myfile(  filename ,ios::binary);
+			myfile.seekg(0 , ios:: end);
+			float file_size = myfile.tellg();
+         
+         /*/cout<<filename<<endl;
+         if(file_size<1024)
+         {
+            cout<< file_size<<" bytes"<<endl;
+         }
+         else if(file_size>=1024 and file_size<(1024*1024))
+         {
+            cout<< file_size<<" bytes"<<endl;
+            cout<< file_size/1024<<" Kbytes"<<endl;
+         }
+         else if(file_size>=(1024*1024) and file_size<(1024*1024*1024))
+         {
+            cout<< file_size<<" bytes"<<endl;
+            cout<< file_size/1024<<" Kbytes"<<endl;
+            cout<< file_size/(1024*1024)<<" Mbytes"<<endl;
+         }
+         else if(file_size>=(1024*1024*1024) and file_size<(1024.00*1024*1024*1024))
+         {
+            cout<< file_size<<" bytes"<<endl;
+            cout<< file_size/1024<<" Kbytes"<<endl;
+            cout<< file_size/(1024*1024)<<" Mbytes"<<endl;
+            cout<< file_size/(1024*1024*1024)<<" Gbytes"<<endl;
+         }
+         else if(file_size>=(1024.00*1024*1024*1024) and file_size<(1024.00*1024*1024*1024*1024))
+         {
+            cout<< file_size<<" bytes"<<endl;
+            cout<< file_size/1024<<" Kbytes"<<endl;
+            cout<< file_size/(1024*1024)<<" Mbytes"<<endl;
+            cout<< file_size/(1024*1024*1024)<<" Gbytes"<<endl;
+            cout<< file_size/(1024.00*1024*1024*1024)<<" Tbytes"<<endl;
+         }/*/
+              
+                  if( type == "B")
+                  {
+                     if(file_size<1024)
+                     {
+                        //cout<< file_size<<" bytes";
+                     }
+                     
+
+                        if(file_size  >=  firstvalue && file_size  <=  secondvalue)
+                        {
+
+                           
+                           //show file
+                           cout<<filename<<endl;
+                           
+
+
+                        }
+                     
+                  
+
+                  }
+
+                  else if( type == "KB")
+                  {
+                     if(file_size>=1024 and file_size<(1024*1024))
+                     {
+                        //cout<< file_size<<" Kbytes";
+                        file_size=file_size/1024;
+                     }
+
+                    
+                     
+                        if(file_size  >=  firstvalue && file_size  <=  secondvalue)
+                        {
+
+                           
+                           //show file
+                           cout<<filename<<endl;
+                           
+
+
+                        }
+                     
+
+                  }
+
+                  else if( type == "MB")
+                  {
+                     if(file_size>=(1024*1024) and file_size<(1024*1024*1024))
+                     {
+                        //cout<< file_size<<" Mbytes";
+                        file_size=file_size/(1024*1024);
+                     }
+
+                    
+                        if(file_size  >=  firstvalue && file_size  <=  secondvalue)
+                        {
+
+                           
+                           //show file
+                           cout<<filename<<endl;
+                           
+
+
+                        }
+                   
+                  
+                     
+                  }
+
+                  else if( type == "GB")
+                  {
+                     if(file_size>=(1024*1024*1024) and file_size<(1024.00*1024*1024*1024))
+                     { 
+                        //cout<< file_size<<" Gbytes";
+                        file_size=file_size/(1024*1024*1024);
+                     }
+               
+                     
+                        if(file_size  >=  firstvalue && file_size  <=  secondvalue)
+                        {
+
+                           
+                           //show file
+                           cout<<filename<<endl;
+
+
+                        }
+                     
+                  
+
+                  }
+
+                  else if( type == "TB")
+                  {
+                     if(file_size>=(1024.00*1024*1024*1024) and file_size<(1024.00*1024*1024*1024*1024))
+                     {
+                        //cout<< file_size<<" Tbytes";
+                        file_size=file_size/(1024.00*1024*1024*1024);
+                     }
+                     
+
+                        if(file_size  >=  firstvalue && file_size  <=  secondvalue)
+                        {
+
+                           
+                           //show file
+                           cout<<filename<<endl;
+
+                        }
+                  
+                  }
+              
+            
+      }
+
+
+
+
+
+
+
+
+			
+
+	}
+		closedir(dr);
+}
+else cout<< "ERROR";
+}
+	
 
