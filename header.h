@@ -122,7 +122,7 @@ void splitType(){
 
     if(filesType == "*"){
         bool checkFiles = false;
-        for (const auto & entry : std::filesystem::recursive_directory_iterator(directoryPath)){
+        for (const auto & entry : std::filesystem::directory_iterator(directoryPath)){
         string currPath;
         currPath = entry.path().string();
 
