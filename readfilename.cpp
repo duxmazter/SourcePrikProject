@@ -11,7 +11,7 @@
 
 #include <dirent.h>
 #include <conio.h>
-
+namespace fs = std::filesystem;
 using namespace std;
 
 string getFilePath(const string& path);
@@ -158,15 +158,17 @@ string getFileExtension(const std::string& path) {
  
 void search(){
 
+string inputpath;
 string type;
 double firstvalue,secondvalue;
 
 
+cout<<"input path : ";
+getline(cin,inputpath);
+string path = inputpath;
+
 cout<< " search by B KB MB GB TB : ";
 getline(cin,type) ;
-
-if(type == "B" or type == "KB" or type == "MB" or type == "GB" or type == "TB")	
-{	
 
 cout<< "input first value : ";
 cin>>firstvalue;
@@ -174,40 +176,18 @@ cout<< "input second value : ";
 cin>>secondvalue;
 
 
-
-	struct dirent *d;
-	struct stat folderorfile;
-	
-	DIR *dr;
-	
-	string path = ".\\";
-	
-	dr = opendir(path.c_str());
+if(type == "B" or type == "KB" or type == "MB" or type == "GB" or type == "TB")	
+{	
+for (const auto & entry : fs::directory_iterator(path))
+   {
+   
+   
 
 
-	if (dr != NULL)
-	{
-		for (d = readdir(dr); d != NULL; d = readdir(dr))
-		{
-			string filename = d->d_name;
-			
-			
-			/*/if (stat(type.c_str(), &dst) == 0)
-			{
 
-				if (dst.st_mode & S_IFDIR)
-				{
-					type = "is a FOLDER.";
-				}
-				else if (dst.st_mode & S_IFREG)
-				{
-					type = "is a FILE.";
-				}
-			}
-			/*/
-			ifstream  myfile(  filename ,ios::binary);
-			myfile.seekg(0 , ios:: end);
-			float file_size = myfile.tellg();
+   ifstream  myfile(  entry.path() ,ios::binary);
+	myfile.seekg(0 , ios:: end);
+	float file_size = myfile.tellg();
          
          /*/cout<<filename<<endl;
          if(file_size<1024)
@@ -254,7 +234,7 @@ cin>>secondvalue;
 
                            
                            //show file
-                           cout<<filename<<endl;
+                           cout<< entry.path()<<endl;
                            
 
 
@@ -279,7 +259,7 @@ cin>>secondvalue;
 
                            
                            //show file
-                           cout<<filename<<endl;
+                           cout<< entry.path()<<endl;
                            
 
 
@@ -302,7 +282,7 @@ cin>>secondvalue;
 
                            
                            //show file
-                           cout<<filename<<endl;
+                           cout<< entry.path()<<endl;
                            
 
 
@@ -326,7 +306,7 @@ cin>>secondvalue;
 
                            
                            //show file
-                           cout<<filename<<endl;
+                           cout<< entry.path()<<endl;
 
 
                         }
@@ -349,28 +329,21 @@ cin>>secondvalue;
 
                            
                            //show file
-                           cout<<filename<<endl;
+                           cout<< entry.path()<<endl;
 
                         }
                   
                   }
               
-            
-      }
-
-
-
-
-
-
-
-
-			
-
-	}
-		closedir(dr);
+      else cout<< "ERROR";     
+   }
+		
+      
 }
-else cout<< "ERROR";
-}
-	
+}	
+
+
+
+   
+
 
