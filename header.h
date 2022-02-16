@@ -333,7 +333,6 @@ string getFileTimecreate(const std::string& path) {
     auto timemod = ctime(&fileInfo.st_mtime);         // Last mod time
     
 }
-
 */
 
 /*
@@ -347,12 +346,10 @@ void splitDate()
     cout << "Choose your files directory : ";
     string directoryPath;
     getline(cin,directoryPath);
-
     // create <vector> to collect string from timecreate function (not complete)
     
     cout << "------------------------------------------------------------------------" << endl;
 }
-
 //  not complete yet.
 /*
    if(filesType == "*"){
@@ -360,7 +357,6 @@ void splitDate()
         for (const auto & entry : std::filesystem::directory_iterator(directoryPath)){
         string currPath;
         currPath = entry.path().string();
-
             if(getFileExtension(currPath) != filesType){
                 filesType = getFileExtension(currPath);
                 if(filesType != ""){
@@ -438,7 +434,6 @@ cin>>secondvalue;
 			
 			/*/if (stat(type.c_str(), &dst) == 0)
 			{
-
 				if (dst.st_mode & S_IFDIR)
 				{
 					type = "is a FOLDER.";

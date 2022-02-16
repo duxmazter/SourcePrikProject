@@ -1,5 +1,3 @@
-# SourcePrikProject
-A backup and allocating software that help your storage even more pleasant to look at
+# SourcePrikProject 640612093 & 640612097
 
-# Branch #1
-ทำ code ช่วยเเยกไฟล์ ประเภทเดียวกันไว้ในโฟเดอร์เดียวกัน
+# This branch is about how to split file by date 
