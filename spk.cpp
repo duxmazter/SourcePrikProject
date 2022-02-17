@@ -1,4 +1,4 @@
-#include "header.h"
+#include "spk.h"
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -9,17 +9,18 @@ int main(int argc,char *argv[]){
         cout<< "Please input command: ";
         string command;
         getline(cin,command);
+        string uCom = toUpperStr(command);
 
-        if(command == "exit") break;
-        else if(command == "clone") clone();
-        else if(command == "sorttype") splitType();
-        else if(command == "sortdate"); //splitdate();
-        else if(command == "search") search();
-        else if(command == "show") showFile();
-        else if (command == "dclone") deClone();
-        else if (command == "dfi") banish(1);
-        else if (command == "dfol") banish(2);
-        else if (command == "help" or command == "h" or command == "H" ) help();
+        if(uCom == "EXIT") break;
+        else if(uCom == "CLONE") clone();
+        else if(uCom == "STYPE") splitType();
+        else if(uCom == "SDATE") splitDate();
+        else if(uCom == "FIND") search();
+        else if(uCom == "SHOW") showFile();
+        else if (uCom == "DCLONE") deClone();
+        else if (uCom == "DFI") banish(1);
+        else if (uCom == "DFOL") banish(2);
+        else if (uCom == "HELP" or command == "h" or command == "H" ) help();
         else{
             cout << "---------------------------------\n";
             cout << "Invalid command.\n";
