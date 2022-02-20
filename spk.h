@@ -34,7 +34,7 @@ void splitType();
 
 string getflieDate(string fullpath);
 
-void splitType();
+void splitDate();
 
 void clone();
 
@@ -49,6 +49,13 @@ void banish(int);
 void help();
 
 void search();
+
+void dspec();
+
+void pushname();
+
+
+int dirExists(const char* const path);
 
 string getFilePath(const std::string& path) {
         auto pathEnd = path.find_last_of("/\\");
@@ -255,7 +262,7 @@ void cloneFile(string fullpath){
     cout << "----------------------------------------------------------------------------------------------------" << endl;
 
     //output file
-    ofstream outfile(filePath + "\\" + s_filename + "(Cloned).txt" );
+    ofstream outfile(filePath+"(Cloned)" + "\\" + s_filename + "(Cloned).txt" );
     outfile << "Path: " << filePath<<endl;
     outfile << "Name: " << s_filename << endl;
     outfile << "Size: " << size << " bytes"<<endl;
@@ -276,6 +283,21 @@ void showFile(){
         cout << entry.path() << ::endl;
 }
 
+int dirExists(const char* const path)
+{
+    struct stat info;
+
+    int statRC = stat( path, &info );
+    if( statRC != 0 )
+    {
+        if (errno == ENOENT)  { return 0; } // something along the path does not exist
+        if (errno == ENOTDIR) { return 0; } // something in path prefix is not a dir
+        return -1;
+    }
+
+    return ( info.st_mode & S_IFDIR ) ? 1 : 0;
+}
+
 void cloneFol(string directoryPath){
     string dupe ="(Cloned)(Cloned)";
     string sub = "(Cloned)";
@@ -294,6 +316,7 @@ void cloneFol(string directoryPath){
                     }else{
                     rmdir(newPath.c_str());
                     mkdir(newPath.c_str());
+
                     }
             }
             else if( fs::is_regular_file(currPath)) {
@@ -306,7 +329,17 @@ void cloneFol(string directoryPath){
     for (const auto &entry : std::filesystem::recursive_directory_iterator(directoryPath)){
         string currPath;
         currPath = entry.path().string();
-        if ((currPath.find(sub) != string::npos)) ;
+        if ((currPath.find(sub) != string::npos)){
+            string ClonedPath = getFilePath(currPath.c_str()) + "(Cloned)";
+            if(dirExists(ClonedPath.c_str()) == 1){
+                string ClonedFullpath = ClonedPath +"\\"+ getFileName(currPath);
+                rename(currPath.c_str(),ClonedFullpath.c_str());
+            }
+
+        }
+
+
+
     }    
 }
 
@@ -352,6 +385,81 @@ void deClone(){
 
 }
 
+void dspec(){
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+    cout << "Choose your files directory : ";
+    string directoryPath;
+    getline(cin,directoryPath);
+
+    string sub;
+    cout << "Input continuous files's name to be deleted : ";
+    getline(cin,sub);
+
+    for (const auto &entry : std::filesystem::recursive_directory_iterator(directoryPath)){
+        string currPath;
+        currPath = entry.path().string();
+        
+        if ((currPath.find(sub) != string::npos)) rmdir(currPath.c_str());
+
+            
+    }
+
+    cout<< "Succesfully remove all "<< sub <<" files and folders from " << directoryPath<<endl;
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+
+}
+
+void pushname(){
+    cout << "----------------------------------------------------------------------------------------------------" << endl;
+    cout << "Choose your files directory : ";
+    string directoryPath;
+    getline(cin,directoryPath);
+
+    string sub;
+    cout << "Input continuous files's name to be rename : ";
+    getline(cin,sub);
+
+    string pname;
+    cout << "Input name to push : ";
+    getline(cin,sub);
+
+
+do{
+    string fOrB;
+    cout << "[F] = Pushs word before  name, [B] = Pushs word after name : ";
+    getline(cin,sub);
+
+
+        if(fOrB == "F" or fOrB == "f"){
+            for (const auto &entry : std::filesystem::recursive_directory_iterator(directoryPath)){
+            string currPath;
+            currPath = entry.path().string();
+            
+                if ((currPath.find(sub) != string::npos)){
+                    string newName = getFilePath(currPath.c_str()) + pname + getFileName(currPath.c_str());
+                    rename(currPath.c_str(),newName.c_str());
+                }
+                
+            }
+        }else if(fOrB == "B" or fOrB == "b"){
+            for (const auto &entry : std::filesystem::recursive_directory_iterator(directoryPath)){
+            string currPath;
+            currPath = entry.path().string();
+            
+                if ((currPath.find(sub) != string::npos)){
+                    string newName = getFilePath(currPath.c_str()) +  getFileName(currPath.c_str()) + pname;
+                    rename(currPath.c_str(),newName.c_str());
+                }
+            }
+        }else{
+            cout << "---------------------------------\n";
+            cout << "Invalid command.\n";
+            cout << "---------------------------------\n";
+        }
+
+    }while(true);
+}
+
 void banish(int arg){
     cout << "----------------------------------------------------------------------------------------------------" << endl;
     cout << "Choose your files directory : ";
@@ -377,6 +485,7 @@ void banish(int arg){
             
         }
     }
+    
     string forf; 
     if (arg == 1) forf ="files";
     else if (arg == 2) forf = "folders";
@@ -388,63 +497,80 @@ void moveFile(const string& oldPath, const string& newPath){
     rename(oldPath.c_str(), newPath.c_str());
 }
 
-/* idea splitdate
-    * FUNCTION: getFileTimecreate 
-    * USE: Returns the file time creation from a given file path
-    * @param path: The path of the file
-    * @return: The file time creation from the given file path
-    
-string getFileTimecreate(const std::string& path) {
-        //  not complete now. 
-         reference 
-    struct stat fileInfo;
-    if (stat(s_filename.c_str(), &fileInfo) != 0) {  // Use stat( ) to get the info
-      std::cerr << "Error: " << strerror(errno) << '\n';
-   }
-    auto timecreate = ctime(&fileInfo.st_ctime);         // Creation time
-    auto timemod = ctime(&fileInfo.st_mtime);         // Last mod time
-    
-}
-*/
 
-/*
 void splitDate()
 {
-    cout << "************************************************************************" << endl;
+
     cout << "------------------------------------------------------------------------" << endl;
-    cout << "Current command : Split by Date" << endl << " - Insert directory and fileDate to split files into a new directory." << endl;
+    cout << "Current command : Split by date" << endl << " - Insert directory and filedate to split files into a new directory." << endl;
     cout << "------------------------------------------------------------------------" << endl;
-    cout << "************************************************************************" << endl;
     cout << "Choose your files directory : ";
     string directoryPath;
     getline(cin,directoryPath);
-    // create <vector> to collect string from timecreate function (not complete)
-    
+
+    string inputdate;
+
+    cout << "Choose your files Date modified month : ";
+    cin >> inputdate;
     cout << "------------------------------------------------------------------------" << endl;
-}
-//  not complete yet.
-/*
-   if(filesType == "*"){
-        bool checkFiles = false;
-        for (const auto & entry : std::filesystem::directory_iterator(directoryPath)){
-        string currPath;
-        currPath = entry.path().string();
-            if(getFileExtension(currPath) != filesType){
-                filesType = getFileExtension(currPath);
-                if(filesType != ""){
-                    moveFilesToDirectory(filesType,directoryPath);
-                    checkFiles = true;
-                } 
-            }
+    string folderName = inputdate;
+
+    /*for (int i = 0; i < folderName.size();i++ ){
+        if (folderName[i] == '/'){
+            folderName[i] = '-';
         }
-        if(!checkFiles) cout << "This directory is empty." << endl;
-        else cout << "All files have been moved successfully." << endl;
     }
-    else if(!moveFilesToDirectory(filesType,directoryPath)) cout << "Not found any file with type " + filesType + "." << endl;
-    else cout << "All files have been moved successfully." << endl;
+    */
+
+
     cout << "------------------------------------------------------------------------" << endl;
+    string newPath;
+    newPath = directoryPath + "\\" + folderName;
+    cout<< "Created folder at new path : " << newPath << endl;
+    cout<<"Folder Name: " << folderName <<endl;
+
+    rmdir(newPath.c_str()); // remove old directory to clear old folder
+    mkdir(newPath.c_str()); // create new directory to collect files
+
+    cout << "------------------------------------------------------------------------" << endl;
+
+
+    cout << "---------------------------- PROCESSING --------------------------------" << endl;
+    
+    for (const auto & entry : std::filesystem::recursive_directory_iterator(directoryPath))
+    {
+        
+    string currPath;
+    currPath = entry.path().string();
+    
+    struct tm* clock;                       // create a time structure
+    struct stat attrib;                     // create a file attribute structure
+    stat(currPath.c_str(), &attrib);        // get the attributes of afile.txt
+    clock = gmtime(&(attrib.st_mtime));
+
+                                            //int day =  clock->tm_mday+1;
+                                            //int mon = clock->tm_mon+1;
+
+    string filedate = to_string(clock->tm_mon+1);
+
+    cout<< currPath << " " << "-->" << " " <<"File Date modified month : "<< filedate <<endl; // show file directory and filedate-modified month
+
+        if(filedate == inputdate) // check modified date month
+        {
+
+        moveFile(currPath , newPath + "\\" + getFileName(currPath)); //move files to new directory
+
+        }
+
+    }
+    cout << "------------------------------------------------------------------------" << endl;
+    cout << "The files that have File-date-modified = " << folderName << " " << "have been moved to folderName : " << folderName << " " << "SUCCESSFULLY!!" << endl;
+    cout << "------------------------------------------------------------------------" << endl;
+
+
+    cout << "------------------------------------------------------------------------" << endl;
+
 }
-*/
 
 void help(){
     cout<< "NAME:"<<endl 
@@ -464,6 +590,8 @@ void help(){
         << "  --dfi                 Delete all files in all subdirectories"<<endl
         << "  --dfol                Delete all folders in all sub directories"<<endl
         << "  --find                Search files from a specific attribute"<<endl
+        << "  --dspec               Delete files or folders with a continuous specific name"<<endl
+        << "  --pname               Rename files or folders with a specific name"<<endl
         << "  --help                Shows all commands"<<endl;
 
 }       
