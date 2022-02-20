@@ -20,6 +20,8 @@ int main(int argc,char *argv[]){
         else if (uCom == "DCLONE") deClone();
         else if (uCom == "DFI") banish(1);
         else if (uCom == "DFOL") banish(2);
+        else if (uCom == "DSPEC") dspec();
+        else if (uCom == "PNAME") pushname();
         else if (uCom == "HELP" or command == "h" or command == "H" ) help();
         else{
             cout << "---------------------------------\n";
