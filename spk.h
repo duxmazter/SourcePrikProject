@@ -119,65 +119,78 @@ bool moveFilesToDirectory(const string& filestype, const string& directoryPath){
 }
 
 
-void splitDate(){
-    cout << "**" << endl;
+void splitDate()
+{
+
     cout << "------------------------------------------------------------------------" << endl;
-    cout << "Current command : Split by type" << endl << " - Insert directory and filetype to split files into a new directory." << endl;
-    cout << "**" << endl;
+    cout << "Current command : Split by date" << endl << " - Insert directory and filedate to split files into a new directory." << endl;
+    cout << "------------------------------------------------------------------------" << endl;
     cout << "Choose your files directory : ";
     string directoryPath;
     getline(cin,directoryPath);
 
     string inputdate;
 
-    cout << "Choose your files mod date month : ";
+    cout << "Choose your files Date modified month : ";
     cin >> inputdate;
-    cout << "Input Date: "<<inputdate<<endl;
+    cout << "------------------------------------------------------------------------" << endl;
     string folderName = inputdate;
-    for (int i = 0; i < folderName.size();i++ ){
+
+    /*for (int i = 0; i < folderName.size();i++ ){
         if (folderName[i] == '/'){
             folderName[i] = '-';
         }
     }
-    cout<< "Folder Name: "<<folderName<<endl;
+    */
 
+
+    cout << "------------------------------------------------------------------------" << endl;
     string newPath;
     newPath = directoryPath + "\\" + folderName;
-    cout<< newPath<<endl;
-    rmdir(newPath.c_str());
-    mkdir(newPath.c_str());
+    cout<< "Created folder at new path : " << newPath << endl;
+    cout<<"Folder Name: " << folderName <<endl;
+
+    rmdir(newPath.c_str()); // remove old directory to clear old folder
+    mkdir(newPath.c_str()); // create new directory to collect files
 
     cout << "------------------------------------------------------------------------" << endl;
 
+
+    cout << "---------------------------- PROCESSING --------------------------------" << endl;
+    
     for (const auto & entry : std::filesystem::recursive_directory_iterator(directoryPath))
     {
+        
     string currPath;
     currPath = entry.path().string();
     
-    struct tm* clock;               // create a time structure
-
-    struct stat attrib;         // create a file attribute structure
-
-    stat(currPath.c_str(), &attrib);     // get the attributes of afile.txt
-
+    struct tm* clock;                       // create a time structure
+    struct stat attrib;                     // create a file attribute structure
+    stat(currPath.c_str(), &attrib);        // get the attributes of afile.txt
     clock = gmtime(&(attrib.st_mtime));
 
-    cout << currPath<<endl;
+                                            //int day =  clock->tm_mday+1;
+                                            //int mon = clock->tm_mon+1;
 
-    int day =  clock->tm_mday+1;
-    int mon = clock->tm_mon+1;
+    string filedate = to_string(clock->tm_mon+1);
 
-    string filedate = to_string(clock->tm_mday+1) +  "/" + to_string(clock->tm_mon+1);
-    cout<<"File Date: "<< filedate <<endl;
+    cout<< currPath << " " << "-->" << " " <<"File Date modified month : "<< filedate <<endl; // show file directory and filedate-modified month
 
-        if(filedate == inputdate){
-        rename(currPath.c_str(),newPath.c_str());
+        if(filedate == inputdate) // check modified date month
+        {
+
+        moveFile(currPath , newPath + "\\" + getFileName(currPath)); //move files to new directory
+
         }
 
     }
-
-    
     cout << "------------------------------------------------------------------------" << endl;
+    cout << "The files that have File-date-modified = " << folderName << " " << "have been moved to folderName : " << folderName << " " << "SUCCESSFULLY!!" << endl;
+    cout << "------------------------------------------------------------------------" << endl;
+
+
+    cout << "------------------------------------------------------------------------" << endl;
+
 }
 
 
@@ -495,81 +508,6 @@ void banish(int arg){
 
 void moveFile(const string& oldPath, const string& newPath){
     rename(oldPath.c_str(), newPath.c_str());
-}
-
-
-void splitDate()
-{
-
-    cout << "------------------------------------------------------------------------" << endl;
-    cout << "Current command : Split by date" << endl << " - Insert directory and filedate to split files into a new directory." << endl;
-    cout << "------------------------------------------------------------------------" << endl;
-    cout << "Choose your files directory : ";
-    string directoryPath;
-    getline(cin,directoryPath);
-
-    string inputdate;
-
-    cout << "Choose your files Date modified month : ";
-    cin >> inputdate;
-    cout << "------------------------------------------------------------------------" << endl;
-    string folderName = inputdate;
-
-    /*for (int i = 0; i < folderName.size();i++ ){
-        if (folderName[i] == '/'){
-            folderName[i] = '-';
-        }
-    }
-    */
-
-
-    cout << "------------------------------------------------------------------------" << endl;
-    string newPath;
-    newPath = directoryPath + "\\" + folderName;
-    cout<< "Created folder at new path : " << newPath << endl;
-    cout<<"Folder Name: " << folderName <<endl;
-
-    rmdir(newPath.c_str()); // remove old directory to clear old folder
-    mkdir(newPath.c_str()); // create new directory to collect files
-
-    cout << "------------------------------------------------------------------------" << endl;
-
-
-    cout << "---------------------------- PROCESSING --------------------------------" << endl;
-    
-    for (const auto & entry : std::filesystem::recursive_directory_iterator(directoryPath))
-    {
-        
-    string currPath;
-    currPath = entry.path().string();
-    
-    struct tm* clock;                       // create a time structure
-    struct stat attrib;                     // create a file attribute structure
-    stat(currPath.c_str(), &attrib);        // get the attributes of afile.txt
-    clock = gmtime(&(attrib.st_mtime));
-
-                                            //int day =  clock->tm_mday+1;
-                                            //int mon = clock->tm_mon+1;
-
-    string filedate = to_string(clock->tm_mon+1);
-
-    cout<< currPath << " " << "-->" << " " <<"File Date modified month : "<< filedate <<endl; // show file directory and filedate-modified month
-
-        if(filedate == inputdate) // check modified date month
-        {
-
-        moveFile(currPath , newPath + "\\" + getFileName(currPath)); //move files to new directory
-
-        }
-
-    }
-    cout << "------------------------------------------------------------------------" << endl;
-    cout << "The files that have File-date-modified = " << folderName << " " << "have been moved to folderName : " << folderName << " " << "SUCCESSFULLY!!" << endl;
-    cout << "------------------------------------------------------------------------" << endl;
-
-
-    cout << "------------------------------------------------------------------------" << endl;
-
 }
 
 void help(){
