@@ -129,7 +129,7 @@ SetConsoleTextAttribute(h,101) ;
     cout << " - Insert directory and filedate to split files into a new directory." << endl;
     cout << "------------------------------------------------------------------------" << endl;
 SetConsoleTextAttribute(h,96) ;
-    cout << "Choose your files directory : ";
+    cout << "Choose your files directory :";
     string directoryPath;
     getline(cin,directoryPath);
 
@@ -212,7 +212,7 @@ SetConsoleTextAttribute(h,206) ;
     cout << "------------------------------------------------------------------------" << endl;
     cout << "************************************************************************" << endl;
 SetConsoleTextAttribute(h,192) ;
-    cout << "Choose your files directory : ";
+    cout << "Choose your files directory :";
     string directoryPath;
     getline(cin,directoryPath);
 SetConsoleTextAttribute(h,192) ;
@@ -378,7 +378,7 @@ void clone()
 SetConsoleTextAttribute(h,79) ;   
     cout << "----------------------------------------------------------------------------------------------------" << endl;
 
-    cout << "Choose your files directory : ";
+    cout << "Choose your files directory :";
     string directoryPath;
     getline(cin,directoryPath);
 SetConsoleTextAttribute(h,74) ;   
@@ -392,7 +392,7 @@ void deClone()
 {
 SetConsoleTextAttribute(h,46) ;
     cout << "----------------------------------------------------------------------------------------------------" << endl;
-    cout << "Choose your files directory : ";
+    cout << "Choose your files directory :";
     string directoryPath;
     getline(cin,directoryPath);
 SetConsoleTextAttribute(h,39) ;
@@ -508,11 +508,12 @@ SetConsoleTextAttribute(h,7) ;
 
 void banish(int arg) 
 {
+SetConsoleTextAttribute(h,191) ;
     cout << "----------------------------------------------------------------------------------------------------" << endl;
     cout << "Choose your files directory : ";
     string directoryPath;
     getline(cin,directoryPath);
-    
+SetConsoleTextAttribute(h,177) ;
     for (const auto &entry : std::filesystem::recursive_directory_iterator(directoryPath)){
         string currPath;
         currPath = entry.path().string();
@@ -532,12 +533,13 @@ void banish(int arg)
             
         }
     }
-    
+SetConsoleTextAttribute(h,191) ;
     string forf; 
     if (arg == 1) forf ="files";
     else if (arg == 2) forf = "folders";
     cout<< "Succesfully remove all " << forf <<" directories from " << directoryPath<<endl;
     cout << "----------------------------------------------------------------------------------------------------" << endl;
+SetConsoleTextAttribute(h,7) ;
 }
 
 void moveFile(const string& oldPath, const string& newPath){
@@ -547,7 +549,7 @@ void moveFile(const string& oldPath, const string& newPath){
 void help()
 {
     cout<< "NAME:"<<endl 
-        << "        spk - A fast, simple and clean files manaaging program"<<endl
+        << "        spk - A fast, simple and clean files managing program"<<endl
         << "USAGE:"<<endl
         <<"        [COMMAND]...[DIRECTORY]"<<endl
         << "VERSION:"<<endl
@@ -565,7 +567,7 @@ void help()
     cout<< "  --show                Shows all the files and folder in all subdirectories"<<endl;
     SetConsoleTextAttribute(h,46) ;
     cout<< "  --dclone              Delete all the files with \"(Cloned)\" in it's name"<<endl;
-    SetConsoleTextAttribute(h,160) ;
+    SetConsoleTextAttribute(h,191) ;
     cout<< "  --dfi                 Delete all files in all subdirectories"<<endl;
     SetConsoleTextAttribute(h,191) ;
     cout<< "  --dfol                Delete all folders in all sub directories"<<endl;
