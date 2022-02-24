@@ -6,6 +6,7 @@ namespace fs = std::filesystem;
 int main(int argc,char *argv[]){
 
     do{
+        SetConsoleTextAttribute(h,248) ;
         cout<< "Please input command: ";
         string command;
         getline(cin,command);
@@ -24,9 +25,11 @@ int main(int argc,char *argv[]){
         else if (uCom == "PNAME") pushname();
         else if (uCom == "HELP" or command == "h" or command == "H" ) help();
         else{
+        SetConsoleTextAttribute(h,4) ;   
             cout << "---------------------------------\n";
             cout << "Invalid command.\n";
             cout << "---------------------------------\n";
+        SetConsoleTextAttribute(h,7) ;   
         }
     }while(true);
 

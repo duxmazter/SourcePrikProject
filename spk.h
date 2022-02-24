@@ -13,7 +13,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
-
+#include <windows.h>
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -53,6 +53,8 @@ void search();
 void dspec();
 
 void pushname();
+
+HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE) ;
 
 
 int dirExists(const char* const path);
@@ -119,12 +121,14 @@ bool moveFilesToDirectory(const string& filestype, const string& directoryPath){
 }
 
 
-void splitDate()
+void splitDate() 
 {
-
+SetConsoleTextAttribute(h,101) ;
     cout << "------------------------------------------------------------------------" << endl;
-    cout << "Current command : Split by date" << endl << " - Insert directory and filedate to split files into a new directory." << endl;
+    cout << "Current command : Split by date" << endl ;
+    cout << " - Insert directory and filedate to split files into a new directory." << endl;
     cout << "------------------------------------------------------------------------" << endl;
+SetConsoleTextAttribute(h,96) ;
     cout << "Choose your files directory : ";
     string directoryPath;
     getline(cin,directoryPath);
@@ -134,6 +138,7 @@ void splitDate()
     cout << "Choose your files Date modified month : ";
     cin >> inputdate;
     cout << "------------------------------------------------------------------------" << endl;
+ SetConsoleTextAttribute(h,101) ;   
     string folderName = inputdate;
 
     /*for (int i = 0; i < folderName.size();i++ ){
@@ -149,12 +154,12 @@ void splitDate()
     newPath = directoryPath + "\\" + folderName;
     cout<< "Created folder at new path : " << newPath << endl;
     cout<<"Folder Name: " << folderName <<endl;
-
     rmdir(newPath.c_str()); // remove old directory to clear old folder
     mkdir(newPath.c_str()); // create new directory to collect files
 
     cout << "------------------------------------------------------------------------" << endl;
 
+SetConsoleTextAttribute(h,98) ;
 
     cout << "---------------------------- PROCESSING --------------------------------" << endl;
     
@@ -185,16 +190,20 @@ void splitDate()
 
     }
     cout << "------------------------------------------------------------------------" << endl;
+ SetConsoleTextAttribute(h,101) ;   
+    cout << "------------------------------------------------------------------------" << endl;
     cout << "The files that have File-date-modified = " << folderName << " " << "have been moved to folderName : " << folderName << " " << "SUCCESSFULLY!!" << endl;
     cout << "------------------------------------------------------------------------" << endl;
 
 
-    cout << "------------------------------------------------------------------------" << endl;
-
+    cin.ignore();
+SetConsoleTextAttribute(h,7) ;
 }
 
 
-void splitType(){
+void splitType()
+{ 
+SetConsoleTextAttribute(h,206) ;
     cout << "************************************************************************" << endl;
     cout << "------------------------------------------------------------------------" << endl;
     cout << "Current command : Split by type" << endl << " - Insert directory and filetype to split files into a new directory." << endl;
@@ -202,15 +211,16 @@ void splitType(){
     cout << " - Insert * to split all files in the directory.   " << endl;
     cout << "------------------------------------------------------------------------" << endl;
     cout << "************************************************************************" << endl;
+SetConsoleTextAttribute(h,192) ;
     cout << "Choose your files directory : ";
     string directoryPath;
     getline(cin,directoryPath);
-
+SetConsoleTextAttribute(h,192) ;
     cout << "Choose your files type : ";
     string filesType;
     cin >> filesType;
     for (auto & c: filesType) c = tolower(c);
-
+SetConsoleTextAttribute(h,199) ;
     cout << "------------------------------------------------------------------------" << endl;
 
     if(filesType == "*"){
@@ -233,9 +243,12 @@ void splitType(){
     else if(!moveFilesToDirectory(filesType,directoryPath)) cout << "Not found any file with type " + filesType + "." << endl;
     else cout << "All files have been moved successfully." << endl;
     cout << "------------------------------------------------------------------------" << endl;
+SetConsoleTextAttribute(h,7) ;
+    cin.ignore();
 }
 
-void cloneFile(string fullpath){
+void cloneFile(string fullpath) 
+{
 
     //set path
     auto filePath = getFilePath(fullpath);
@@ -286,7 +299,9 @@ void cloneFile(string fullpath){
 
 }
 
-void showFile(){
+void showFile() 
+{
+SetConsoleTextAttribute(h,228) ;    
     cout << "----------------------------------------------------------------------------------------------------" << endl;
     cout << "Choose your files directory : ";
     string directoryPath;
@@ -309,9 +324,11 @@ int dirExists(const char* const path)
     }
 
     return ( info.st_mode & S_IFDIR ) ? 1 : 0;
+SetConsoleTextAttribute(h,7) ;
 }
 
-void cloneFol(string directoryPath){
+void cloneFol(string directoryPath) 
+{
     string dupe ="(Cloned)(Cloned)";
     string sub = "(Cloned)";
 
@@ -356,21 +373,29 @@ void cloneFol(string directoryPath){
     }    
 }
 
-void clone(){
+void clone() 
+{
+SetConsoleTextAttribute(h,79) ;   
     cout << "----------------------------------------------------------------------------------------------------" << endl;
+
     cout << "Choose your files directory : ";
     string directoryPath;
     getline(cin,directoryPath);
-
+SetConsoleTextAttribute(h,74) ;   
     cloneFol(directoryPath);
+SetConsoleTextAttribute(h,7) ;
+
+
 }
 
-void deClone(){
+void deClone() 
+{
+SetConsoleTextAttribute(h,46) ;
     cout << "----------------------------------------------------------------------------------------------------" << endl;
     cout << "Choose your files directory : ";
     string directoryPath;
     getline(cin,directoryPath);
-
+SetConsoleTextAttribute(h,39) ;
     string dupe ="(Cloned)(Cloned)";
     string sub = "(Cloned)";
 
@@ -392,13 +417,15 @@ void deClone(){
                     remove(currPath.c_str());
                 }
     }
-
+SetConsoleTextAttribute(h,46) ;
     cout<< "Succesfully remove all cloned directories from " << directoryPath<<endl;
     cout << "----------------------------------------------------------------------------------------------------" << endl;
-
+SetConsoleTextAttribute(h,7) ;
 }
 
-void dspec(){
+void dspec() 
+{
+SetConsoleTextAttribute(h,31) ;
     cout << "----------------------------------------------------------------------------------------------------" << endl;
     cout << "Choose your files directory : ";
     string directoryPath;
@@ -407,7 +434,7 @@ void dspec(){
     string sub;
     cout << "Input continuous files's name to be deleted : ";
     getline(cin,sub);
-
+SetConsoleTextAttribute(h,27) ;
     for (const auto &entry : std::filesystem::recursive_directory_iterator(directoryPath)){
         string currPath;
         currPath = entry.path().string();
@@ -416,18 +443,20 @@ void dspec(){
 
             
     }
-
+SetConsoleTextAttribute(h,31) ;
     cout<< "Succesfully remove all "<< sub <<" files and folders from " << directoryPath<<endl;
     cout << "----------------------------------------------------------------------------------------------------" << endl;
-
+SetConsoleTextAttribute(h,7) ;
 }
 
-void pushname(){
+void pushname() 
+{
+SetConsoleTextAttribute(h,208) ;
     cout << "----------------------------------------------------------------------------------------------------" << endl;
     cout << "Choose your files directory : ";
     string directoryPath;
     getline(cin,directoryPath);
-
+SetConsoleTextAttribute(h,222) ;
     string sub;
     cout << "Input continuous files's name to be rename : ";
     getline(cin,sub);
@@ -442,7 +471,7 @@ do{
     cout << "[F] = Pushs word before  name, [B] = Pushs word after name : ";
     getline(cin,sub);
 
-
+SetConsoleTextAttribute(h,213) ;
         if(fOrB == "F" or fOrB == "f"){
             for (const auto &entry : std::filesystem::recursive_directory_iterator(directoryPath)){
             string currPath;
@@ -465,15 +494,20 @@ do{
                 }
             }
         }else{
+        SetConsoleTextAttribute(h,212) ;
             cout << "---------------------------------\n";
             cout << "Invalid command.\n";
             cout << "---------------------------------\n";
+        SetConsoleTextAttribute(h,222) ;
+
         }
 
     }while(true);
+SetConsoleTextAttribute(h,7) ;
 }
 
-void banish(int arg){
+void banish(int arg) 
+{
     cout << "----------------------------------------------------------------------------------------------------" << endl;
     cout << "Choose your files directory : ";
     string directoryPath;
@@ -510,7 +544,8 @@ void moveFile(const string& oldPath, const string& newPath){
     rename(oldPath.c_str(), newPath.c_str());
 }
 
-void help(){
+void help()
+{
     cout<< "NAME:"<<endl 
         << "        spk - A fast, simple and clean files manaaging program"<<endl
         << "USAGE:"<<endl
@@ -519,23 +554,36 @@ void help(){
         <<"        v1.0.0"<<endl
         << "COMMAND:"<<endl
         <<"        -help Shows a list of commands or help for one command"<<endl
-        << "GLOBAL OPTIONS:"<<endl
-        << "  --clone               Clone files or directories"<<endl
-        << "  --stype               Sort files in all subdirectories by a file's extention to the single folder"<<endl
-        << "  --sdate               Sort files in all subdirectories by a file's created time to the single folder"<<endl
-        << "  --show                Shows all the files and folder in all subdirectories"<<endl
-        << "  --dclone              Delete all the files with \"(Cloned)\" in it's name"<<endl
-        << "  --dfi                 Delete all files in all subdirectories"<<endl
-        << "  --dfol                Delete all folders in all sub directories"<<endl
-        << "  --find                Search files from a specific attribute"<<endl
-        << "  --dspec               Delete files or folders with a continuous specific name"<<endl
-        << "  --pname               Rename files or folders with a specific name"<<endl
-        << "  --help                Shows all commands"<<endl;
+        << "GLOBAL OPTIONS:"<<endl ;
+    SetConsoleTextAttribute(h,79) ;
+    cout<< "  --clone               Clone files or directories"<<endl;
+    SetConsoleTextAttribute(h,206) ;
+    cout<< "  --stype               Sort files in all subdirectories by a file's extention to the single folder"<<endl;
+    SetConsoleTextAttribute(h,101) ;
+    cout<< "  --sdate               Sort files in all subdirectories by a file's created time to the single folder"<<endl;
+    SetConsoleTextAttribute(h,228) ;
+    cout<< "  --show                Shows all the files and folder in all subdirectories"<<endl;
+    SetConsoleTextAttribute(h,46) ;
+    cout<< "  --dclone              Delete all the files with \"(Cloned)\" in it's name"<<endl;
+    SetConsoleTextAttribute(h,160) ;
+    cout<< "  --dfi                 Delete all files in all subdirectories"<<endl;
+    SetConsoleTextAttribute(h,191) ;
+    cout<< "  --dfol                Delete all folders in all sub directories"<<endl;
+    SetConsoleTextAttribute(h,151) ;
+    cout<< "  --find                Search files from a specific attribute"<<endl;
+    SetConsoleTextAttribute(h,31) ;
+    cout<< "  --dspec               Delete files or folders with a continuous specific name"<<endl;
+    SetConsoleTextAttribute(h,208) ;
+    cout<< "  --pname               Rename files or folders with a specific name"<<endl;
+    SetConsoleTextAttribute(h,86) ;
+    cout<< "  --help                Shows all commands"<<endl;
+    SetConsoleTextAttribute(h,7) ;
 
 }       
 
-void search(){
-
+void search() 
+{
+SetConsoleTextAttribute(h,151) ;
 string inputpath;
 string type;
 double firstvalue,secondvalue;
@@ -544,7 +592,7 @@ double firstvalue,secondvalue;
 cout<<"input path : ";
 getline(cin,inputpath);
 string path = inputpath;
-
+SetConsoleTextAttribute(h,144) ;
 cout<< "search by B KB MB GB TB : ";
 getline(cin,type) ;
 
@@ -552,17 +600,14 @@ cout<< "input first value : ";
 cin>>firstvalue;
 cout<< "input second value : ";
 cin>>secondvalue;
+SetConsoleTextAttribute(h,154) ;
 
 
 if(type == "B" or type == "KB" or type == "MB" or type == "GB" or type == "TB")	
 {	
 for (const auto & entry : fs::directory_iterator(path))
    {
-   
-   
-
-
-
+ 
    ifstream  myfile(  entry.path() ,ios::binary);
 	myfile.seekg(0 , ios:: end);
 	float file_size = myfile.tellg();
@@ -605,20 +650,14 @@ for (const auto & entry : fs::directory_iterator(path))
                      {
                         //cout<< file_size<<" bytes";
                      }
-                     
 
                         if(file_size  >=  firstvalue && file_size  <=  secondvalue)
                         {
 
-                           
                            //show file
                            cout<< entry.path()<<endl;
-                           
-
-
+ 
                         }
-                     
-                  
 
                   }
 
@@ -629,21 +668,15 @@ for (const auto & entry : fs::directory_iterator(path))
                         //cout<< file_size<<" Kbytes";
                         file_size=file_size/1024;
                      }
-
-                    
-                     
+         
                         if(file_size  >=  firstvalue && file_size  <=  secondvalue)
                         {
-
-                           
+                        
                            //show file
                            cout<< entry.path()<<endl;
-                           
-
 
                         }
-                     
-
+ 
                   }
 
                   else if( type == "MB")
@@ -653,21 +686,14 @@ for (const auto & entry : fs::directory_iterator(path))
                         //cout<< file_size<<" Mbytes";
                         file_size=file_size/(1024*1024);
                      }
-
-                    
+                  
                         if(file_size  >=  firstvalue && file_size  <=  secondvalue)
                         {
-
-                           
-                           //show file
+                       //show file
                            cout<< entry.path()<<endl;
-                           
-
 
                         }
-                   
-                  
-                     
+              
                   }
 
                   else if( type == "GB")
@@ -677,20 +703,15 @@ for (const auto & entry : fs::directory_iterator(path))
                         //cout<< file_size<<" Gbytes";
                         file_size=file_size/(1024*1024*1024);
                      }
-               
-                     
+
                         if(file_size  >=  firstvalue && file_size  <=  secondvalue)
                         {
-
-                           
-                           //show file
+                         //show file
                            cout<< entry.path()<<endl;
 
 
                         }
-                     
-                  
-
+ 
                   }
 
                   else if( type == "TB")
@@ -714,8 +735,11 @@ for (const auto & entry : fs::directory_iterator(path))
                   }
               
       else cout<< "ERROR";     
+
    }
 		
-      
+
 }
+SetConsoleTextAttribute(h,7) ;
+cin.ignore();
 }
