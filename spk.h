@@ -135,8 +135,9 @@ SetConsoleTextAttribute(h,96) ;
 
     string inputdate;
 
-    cout << "Choose your files Date modified month : ";
+    cout << "Choose your files Date modified month(1-12) : ";
     cin >> inputdate;
+
     cout << "------------------------------------------------------------------------" << endl;
  SetConsoleTextAttribute(h,101) ;   
     string folderName = inputdate;
@@ -438,7 +439,7 @@ SetConsoleTextAttribute(h,27) ;
         string currPath;
         currPath = entry.path().string();
         
-        if ((currPath.find(sub) != string::npos)) rmdir(currPath.c_str());
+        if ((currPath.find(sub) != string::npos)) remove(currPath.c_str());
 
             
     }
@@ -462,7 +463,7 @@ SetConsoleTextAttribute(h,222) ;
 
     string pname;
     cout << "Input name to push :";
-    getline(cin,sub);
+    getline(cin,pname);
 
 
 do{
@@ -477,7 +478,7 @@ SetConsoleTextAttribute(h,213) ;
             currPath = entry.path().string();
             
                 if ((currPath.find(sub) != string::npos)){
-                    string newName = getFilePath(currPath.c_str()) + pname + getFileName(currPath.c_str());
+                    string newName = getFilePath(currPath.c_str()) +"\\" + pname + getFileName(currPath.c_str()) + "."+getFileExtension(currPath) ;
                     rename(currPath.c_str(),newName.c_str());
                 }
                 
@@ -488,7 +489,7 @@ SetConsoleTextAttribute(h,213) ;
             currPath = entry.path().string();
             
                 if ((currPath.find(sub) != string::npos)){
-                    string newName = getFilePath(currPath.c_str()) +  getFileName(currPath.c_str()) + pname;
+                    string newName = getFilePath(currPath.c_str()) +"\\"+ getFileName(currPath.c_str()) + pname + "." + getFileExtension(currPath.c_str()) ;
                     rename(currPath.c_str(),newName.c_str());
                 }
             }
