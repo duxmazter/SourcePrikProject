@@ -296,14 +296,13 @@ void cloneFile(string fullpath)
     outfile << "Last modified time: " <<clock->tm_mday+1<<"/"<<clock->tm_mon+1<<"/"<<clock->tm_year+1900<<endl;
     outfile.close();
 
-
 }
 
 void showFile() 
 {
 SetConsoleTextAttribute(h,228) ;    
     cout << "----------------------------------------------------------------------------------------------------" << endl;
-    cout << "Choose your files directory : ";
+    cout << "Choose your files directory :";
     string directoryPath;
     getline(cin,directoryPath);
 
@@ -427,12 +426,12 @@ void dspec()
 {
 SetConsoleTextAttribute(h,31) ;
     cout << "----------------------------------------------------------------------------------------------------" << endl;
-    cout << "Choose your files directory : ";
+    cout << "Choose your files directory :";
     string directoryPath;
     getline(cin,directoryPath);
 
     string sub;
-    cout << "Input continuous files's name to be deleted : ";
+    cout << "Input continuous files's name to be deleted :";
     getline(cin,sub);
 SetConsoleTextAttribute(h,27) ;
     for (const auto &entry : std::filesystem::recursive_directory_iterator(directoryPath)){
@@ -453,16 +452,16 @@ void pushname()
 {
 SetConsoleTextAttribute(h,208) ;
     cout << "----------------------------------------------------------------------------------------------------" << endl;
-    cout << "Choose your files directory : ";
+    cout << "Choose your files directory :";
     string directoryPath;
     getline(cin,directoryPath);
 SetConsoleTextAttribute(h,222) ;
     string sub;
-    cout << "Input continuous files's name to be rename : ";
+    cout << "Input continuous files's name to be rename :";
     getline(cin,sub);
 
     string pname;
-    cout << "Input name to push : ";
+    cout << "Input name to push :";
     getline(cin,sub);
 
 
@@ -562,7 +561,7 @@ void help()
     SetConsoleTextAttribute(h,206) ;
     cout<< "  --stype               Sort files in all subdirectories by a file's extention to the single folder"<<endl;
     SetConsoleTextAttribute(h,101) ;
-    cout<< "  --sdate               Sort files in all subdirectories by a file's created time to the single folder"<<endl;
+    cout<< "  --sdate               Sort files in all subdirectories by a file's modified time to the single folder"<<endl;
     SetConsoleTextAttribute(h,228) ;
     cout<< "  --show                Shows all the files and folder in all subdirectories"<<endl;
     SetConsoleTextAttribute(h,46) ;
@@ -596,152 +595,102 @@ getline(cin,inputpath);
 string path = inputpath;
 SetConsoleTextAttribute(h,144) ;
 cout<< "search by B KB MB GB TB : ";
-getline(cin,type) ;
+cin>> type;
+std::transform(  type.begin(),  type.end(),  type.begin(), []( char c ) { return ( toupper( c ) ); } );
 
-cout<< "input first value : ";
-cin>>firstvalue;
-cout<< "input second value : ";
-cin>>secondvalue;
-SetConsoleTextAttribute(h,154) ;
+
 
 
 if(type == "B" or type == "KB" or type == "MB" or type == "GB" or type == "TB")	
-{	
-for (const auto & entry : fs::directory_iterator(path))
-   {
- 
-   ifstream  myfile(  entry.path() ,ios::binary);
-	myfile.seekg(0 , ios:: end);
-	float file_size = myfile.tellg();
-         
-         /*/cout<<filename<<endl;
-         if(file_size<1024)
-         {
-            cout<< file_size<<" bytes"<<endl;
-         }
-         else if(file_size>=1024 and file_size<(1024*1024))
-         {
-            cout<< file_size<<" bytes"<<endl;
-            cout<< file_size/1024<<" Kbytes"<<endl;
-         }
-         else if(file_size>=(1024*1024) and file_size<(1024*1024*1024))
-         {
-            cout<< file_size<<" bytes"<<endl;
-            cout<< file_size/1024<<" Kbytes"<<endl;
-            cout<< file_size/(1024*1024)<<" Mbytes"<<endl;
-         }
-         else if(file_size>=(1024*1024*1024) and file_size<(1024.00*1024*1024*1024))
-         {
-            cout<< file_size<<" bytes"<<endl;
-            cout<< file_size/1024<<" Kbytes"<<endl;
-            cout<< file_size/(1024*1024)<<" Mbytes"<<endl;
-            cout<< file_size/(1024*1024*1024)<<" Gbytes"<<endl;
-         }
-         else if(file_size>=(1024.00*1024*1024*1024) and file_size<(1024.00*1024*1024*1024*1024))
-         {
-            cout<< file_size<<" bytes"<<endl;
-            cout<< file_size/1024<<" Kbytes"<<endl;
-            cout<< file_size/(1024*1024)<<" Mbytes"<<endl;
-            cout<< file_size/(1024*1024*1024)<<" Gbytes"<<endl;
-            cout<< file_size/(1024.00*1024*1024*1024)<<" Tbytes"<<endl;
-         }/*/
-              
-                  if( type == "B")
+   {	       
+      cout<< "input first value : ";
+      cin>>firstvalue;
+      cout<< "input second value : ";
+      cin>>secondvalue;
+
+ SetConsoleTextAttribute(h,154) ;
+
+   for (const auto &entry : std::filesystem::recursive_directory_iterator(path))
+      {
+         ifstream  myfile(  entry.path() ,ios::binary);
+         myfile.seekg(0 , ios:: end);
+         float file_size = myfile.tellg();
+               if( type == "B")
                   {
                      if(file_size<1024)
-                     {
-                        //cout<< file_size<<" bytes";
-                     }
-
-                        if(file_size  >=  firstvalue && file_size  <=  secondvalue)
                         {
-
-                           //show file
-                           cout<< entry.path()<<endl;
- 
+                           //cout<< file_size<<" bytes";
                         }
-
+                     if(file_size  >=  firstvalue && file_size  <=  secondvalue)
+                        {
+                           cout<< entry.path()<<endl;
+                        }
                   }
-
-                  else if( type == "KB")
+               else if( type == "KB")
                   {
                      if(file_size>=1024 and file_size<(1024*1024))
-                     {
-                        //cout<< file_size<<" Kbytes";
-                        file_size=file_size/1024;
-                     }
-         
-                        if(file_size  >=  firstvalue && file_size  <=  secondvalue)
                         {
-                        
-                           //show file
-                           cout<< entry.path()<<endl;
-
+                           //cout<< file_size<<" Kbytes";
+                           file_size=file_size/1024;
                         }
- 
+                     if(file_size  >=  firstvalue && file_size  <=  secondvalue)
+                        {
+                           cout<< entry.path()<<endl;
+                        }
                   }
-
-                  else if( type == "MB")
+               else if( type == "MB")
                   {
                      if(file_size>=(1024*1024) and file_size<(1024*1024*1024))
-                     {
-                        //cout<< file_size<<" Mbytes";
-                        file_size=file_size/(1024*1024);
-                     }
-                  
-                        if(file_size  >=  firstvalue && file_size  <=  secondvalue)
                         {
-                       //show file
-                           cout<< entry.path()<<endl;
-
+                           //cout<< file_size<<" Mbytes";
+                           file_size=file_size/(1024*1024);
                         }
-              
+                     if(file_size  >=  firstvalue && file_size  <=  secondvalue)
+                        {
+                           cout<< entry.path()<<endl;
+                        }
                   }
-
-                  else if( type == "GB")
+               else if( type == "GB")
                   {
                      if(file_size>=(1024*1024*1024) and file_size<(1024.00*1024*1024*1024))
-                     { 
-                        //cout<< file_size<<" Gbytes";
-                        file_size=file_size/(1024*1024*1024);
-                     }
-
-                        if(file_size  >=  firstvalue && file_size  <=  secondvalue)
-                        {
-                         //show file
-                           cout<< entry.path()<<endl;
-
-
+                        { 
+                           //cout<< file_size<<" Gbytes";
+                           file_size=file_size/(1024*1024*1024);
                         }
- 
+                     if(file_size  >=  firstvalue && file_size  <=  secondvalue)
+                        {
+                           cout<< entry.path()<<endl;
+                        }
                   }
-
-                  else if( type == "TB")
+               else if( type == "TB")
                   {
                      if(file_size>=(1024.00*1024*1024*1024) and file_size<(1024.00*1024*1024*1024*1024))
-                     {
-                        //cout<< file_size<<" Tbytes";
-                        file_size=file_size/(1024.00*1024*1024*1024);
-                     }
-                     
-
-                        if(file_size  >=  firstvalue && file_size  <=  secondvalue)
                         {
-
-                           
-                           //show file
-                           cout<< entry.path()<<endl;
-
+                           //cout<< file_size<<" Tbytes";
+                           file_size=file_size/(1024.00*1024*1024*1024);
                         }
-                  
+                     if(file_size  >=  firstvalue && file_size  <=  secondvalue)
+                           {
+                              cout<< entry.path()<<endl;
+                           }
                   }
-              
-      else cout<< "ERROR";     
+
+               
+      
+         
+      
+     
+         }	
 
    }
-		
-
-}
+   else 
+   {
+    SetConsoleTextAttribute(h,252) ;
+            cout << "---------------------------------\n";
+            cout << "Invalid command.\n";
+            cout << "---------------------------------\n";
+   }
+   
 SetConsoleTextAttribute(h,7) ;
 cin.ignore();
 }

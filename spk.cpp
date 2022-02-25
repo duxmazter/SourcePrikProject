@@ -17,7 +17,7 @@ int main(int argc,char *argv[]){
 
     do{
         SetConsoleTextAttribute(h,248) ;
-        cout<< "Please input command: ";
+        cout<< "Please input command :";
         string command;
         getline(cin,command);
         string uCom = toUpperStr(command);
